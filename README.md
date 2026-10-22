@@ -7,3 +7,5 @@
 视频为网页压缩副本，点击播放时加载；原始测试成片单独保留。
 
 视觉参考：https://beepop.ai/zh
+
+在线体验：https://fenglingai-max.github.io/beepop-video-studio/
