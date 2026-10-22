@@ -1,7 +1,7 @@
 'use strict';
 const $=s=>document.querySelector(s);
 function studioHook(name,...args){if(typeof window!=='undefined'&&typeof window[name]==='function')return window[name](...args);}
-let sample=false,images=[],timer=null,toastTimer=null,activeDraft=null,dbPromise=null;
+let sample=false,images=[],timer=null,toastTimer=null,activeDraft=null,dbPromise=null,flowVersion=0;
 
 const voicePresets = [{"id": "en_f_soft", "label": "Luna · 英文女声｜温柔自然"}, {"id": "en_f_bright", "label": "Aria · 英文女声｜明亮活泼"}, {"id": "en_f_calm", "label": "Emma · 英文女声｜沉稳知性"}, {"id": "en_m_warm", "label": "Noah · 英文男声｜温暖亲和"}, {"id": "en_m_deep", "label": "Leo · 英文男声｜低沉有力"}, {"id": "zh_f_soft", "label": "晓暖 · 中文女声｜温柔自然"}, {"id": "zh_f_bright", "label": "小晴 · 中文女声｜清新活泼"}, {"id": "zh_f_calm", "label": "知夏 · 中文女声｜知性叙述"}, {"id": "zh_m_warm", "label": "言川 · 中文男声｜温暖亲和"}, {"id": "zh_m_deep", "label": "墨辰 · 中文男声｜沉稳有力"}];
 function settings(){return {duration:$('#duration').value,ratio:$('#ratio').value,voice:$('#voice').value,model:$('#model').value}}
@@ -30,8 +30,47 @@ async function openDraft(d){reset();activeDraft=d.id;$('#description').value=d.d
 async function renderDrafts(){const holder=$('#draftList');holder.textContent='正在读取草稿…';let drafts;try{drafts=await dbRequest('readonly',store=>store.getAll())}catch{holder.textContent='当前浏览器暂时无法读取草稿。';return}drafts.sort((a,b)=>b.updatedAt-a.updatedAt);$('#draftCount').textContent=String(drafts.length).padStart(2,'0');holder.replaceChildren();if(!drafts.length){const empty=document.createElement('div');empty.className='empty-projects';empty.innerHTML='<span>▤</span><b>你的下一个作品，从这里开始</b><p>添加商品资料后点击“保存草稿”，<br>下次就能从这里继续。</p>';holder.append(empty);return}for(const d of drafts){const card=document.createElement('article');card.className='draft-card';const icon=document.createElement('span');icon.className='draft-icon';icon.textContent='▤';const info=document.createElement('div');const name=document.createElement('h3');name.textContent=d.title;const detail=document.createElement('p');detail.textContent=new Date(d.updatedAt).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+' · '+(d.sample?'示例草稿':(d.files||[]).length+' 张图片');const open=document.createElement('button');open.className='draft-open';open.textContent='继续编辑 ↗';open.onclick=()=>openDraft(d);info.append(name,detail,open);const remove=document.createElement('button');remove.className='draft-delete';remove.textContent='删除';remove.setAttribute('aria-label','删除草稿 '+d.title);remove.onclick=async()=>{try{await dbRequest('readwrite',store=>store.delete(d.id));if(activeDraft===d.id)activeDraft=null;await renderDrafts();toast('已删除此浏览器中的草稿')}catch{toast('删除失败，请稍后重试。')}};card.append(icon,info,remove);holder.append(card)}}
 $('#projects').onclick=()=>{$('#projectDialog').showModal();renderDrafts()};$('#closeProjects').onclick=()=>$('#projectDialog').close();$('#newProject').onclick=()=>{reset();$('#projectDialog').close();location.hash='create';$('#description').focus()};$('.open-sample').onclick=()=>{$('#projectDialog').close();loadExample()};
 const stages=[['整理商品素材','核对商品图片与描述'],['编排镜头与文案','组织展示、卖点与收尾'],['合成旁白、字幕与画面','预览完整制作步骤'],['完成预览与导出','检查作品并下载示例']];
-function stop(){clearInterval(timer);timer=null}function closeProcess(){stop();studioHook('clearCaseVideo');$('#resultPanel video').pause();$('#processDialog').close()}$('#closeDialog').onclick=closeProcess;$('#cancelDemo').onclick=closeProcess;$('#processDialog').addEventListener('cancel',()=>{stop();studioHook('clearCaseVideo');$('#resultPanel video').pause()});
-$('#generate').onclick=()=>{if(!$('#description').value.trim()){error('填写商品描述，或点击“载入咖啡罐示例”开始。');$('#description').focus();return}if(!sample&&!images.length){error('请添加至少一张商品图片，或载入示例。');$('#upload').focus();return}error('');const previewId=studioHook('currentCaseId')||(sample?'coffee':null);const preview=studioHook('caseVideoInfo',previewId);const chosen=settings();const voice=voicePresets.find(v=>v.id===chosen.voice)||voicePresets[0];$('#runConfig').textContent=chosen.duration+' 秒 / '+chosen.ratio+' / '+voice.label+' / See Dance 2.5（预设）';stop();studioHook('clearCaseVideo');$('#resultPanel').hidden=!preview;$('#cancelDemo').hidden=false;$('#cancelDemo').textContent='取消演示';$('#dialogTitle').textContent='正在预览制作流程';$('#dialogNote').textContent='模拟演示 · 不调用生成服务，不消耗额度。';$('#progressBar').style.width='0%';$('.progress-track').setAttribute('aria-valuenow','0');$('#stageCaption').textContent='准备开始';$('#percent').textContent='0%';$('#progressSteps').innerHTML=stages.map(([s,detail],i)=>`<div class="progress-row" data-step="${i}"><span class="progress-number">${String(i+1).padStart(2,'0')}</span><div><b>${s}</b><small>${detail}</small></div><span class="step-state">等待</span></div>`).join('');$('#processDialog').showModal();if(preview)studioHook('prepareCaseVideo',preview.id);let n=0;function tick(){const row=$(`[data-step="${n}"]`);row.classList.add('done');row.lastElementChild.textContent='演示完成 ✓';n++;$('#progressBar').style.width=n*25+'%';$('.progress-track').setAttribute('aria-valuenow',String(n*25));$('#percent').textContent=n*25+'%';$('#stageCaption').textContent=stages[n-1][0];if(n<4){const next=$(`[data-step="${n}"]`);next.classList.add('current');next.lastElementChild.textContent='演示中…'}if(n===4){stop();$('#dialogTitle').textContent=preview?'流程演示完成 · 查看案例视频':'流程演示完成';$('#dialogNote').textContent=preview?'下方为「'+preview.title+'」已有案例成片，可播放和下载。修改后的资料、画幅和声线尚未生成新视频。':'资料已在浏览器内预览。接入制作服务后，才能生成你的商品视频；你可以先保存草稿。';$('#resultPanel').hidden=!preview;if(preview)$('#resultPanel').scrollIntoView({block:'nearest',behavior:'smooth'});$('#cancelDemo').textContent='返回工作台'}}$('[data-step="0"]').classList.add('current');$('[data-step="0"]').lastElementChild.textContent='演示中…';timer=setInterval(tick,850)};
+function stop(){clearInterval(timer);timer=null}function closeProcess(){stop();flowVersion++;if(typeof window!=='undefined')window.retryCasePreview=null;studioHook('clearCaseVideo');$('#resultPanel video').pause();$('#processDialog').close()}$('#closeDialog').onclick=closeProcess;$('#cancelDemo').onclick=closeProcess;$('#processDialog').addEventListener('cancel',()=>{stop();flowVersion++;if(typeof window!=='undefined')window.retryCasePreview=null;studioHook('clearCaseVideo');$('#resultPanel video').pause()});
+$('#generate').onclick=()=>{
+ if(!$('#description').value.trim()){error('填写商品描述，或点击“一键复刻”载入案例。');$('#description').focus();return}
+ if(!sample&&!images.length){error('请添加至少一张商品图片，或载入案例。');$('#upload').focus();return}
+ error('');const previewId=studioHook('currentCaseId')||(sample?'coffee':null),preview=studioHook('caseVideoInfo',previewId);
+ const chosen=settings(),voice=voicePresets.find(v=>v.id===chosen.voice)||voicePresets[0];
+ $('#runConfig').textContent=chosen.duration+' 秒 / '+chosen.ratio+' / '+voice.label+' / See Dance 2.5（预设）';
+ stop();const run=++flowVersion;studioHook('clearCaseVideo');$('#resultPanel').hidden=true;$('#resultLoadPanel').hidden=!preview;
+ $('#cancelDemo').hidden=false;$('#cancelDemo').textContent='取消演示';$('#dialogTitle').textContent='正在预览制作流程';$('#dialogNote').textContent='模拟演示 · 不调用生成服务，不消耗额度。';
+ $('#progressBar').style.width='0%';$('.progress-track').setAttribute('aria-valuenow','0');$('#stageCaption').textContent='准备开始';$('#percent').textContent='0%';
+ $('#progressSteps').innerHTML=stages.map(([title,detail],i)=>`<div class="progress-row" data-step="${i}"><span class="progress-number">${String(i+1).padStart(2,'0')}</span><div><b>${title}</b><small>${detail}</small></div><span class="step-state">等待</span></div>`).join('');
+ let n=0,stepsFinished=false,videoReady=!preview,loadFailed=false;
+ function finish(){
+  if(run!==flowVersion||!stepsFinished||!videoReady)return;stop();
+  const last=$('[data-step="3"]');last.classList.add('done');last.lastElementChild.textContent='演示完成 ✓';
+  $('#progressBar').style.width='100%';$('.progress-track').setAttribute('aria-valuenow','100');$('#percent').textContent='100%';$('#stageCaption').textContent='完成预览与导出';
+  $('#dialogTitle').textContent=preview?'流程演示完成 · 查看案例视频':'流程演示完成';
+  $('#dialogNote').textContent=preview?'下方为「'+preview.title+'」已有案例成片，可播放和下载。修改后的资料、画幅和声线尚未生成新视频。':'资料已在浏览器内预览。接入制作服务后，才能生成你的商品视频；你可以先保存草稿。';
+  $('#resultLoadPanel').hidden=true;$('#resultPanel').hidden=!preview;$('#cancelDemo').textContent='返回工作台';
+  if(preview)$('#resultPanel').scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
+ function waiting(){
+  if(run!==flowVersion||!stepsFinished||videoReady)return;
+  $('#dialogTitle').textContent=loadFailed?'视频暂未加载成功':'正在加载案例视频';
+  $('#dialogNote').textContent=loadFailed?'请点击“重新加载视频”，加载完成后再显示预览。':'案例视频正在加载，全部就绪后自动显示播放器。';
+  $('[data-step="3"]').lastElementChild.textContent=loadFailed?'等待重试':'视频加载中…';$('#stageCaption').textContent=loadFailed?'等待重新加载视频':'加载案例视频';
+ }
+ function loadPreview(){
+  if(run!==flowVersion||!preview)return;loadFailed=false;videoReady=false;$('#resultPanel').hidden=true;$('#resultLoadPanel').hidden=false;waiting();
+  return Promise.resolve(studioHook('prepareCaseVideo',preview.id)).then(ready=>{if(run!==flowVersion)return;videoReady=ready===true;loadFailed=!videoReady;if(videoReady)finish();else waiting();});
+ }
+ $('#processDialog').showModal();if(typeof window!=='undefined')window.retryCasePreview=preview?loadPreview:null;if(preview)loadPreview();
+ function tick(){
+  if(run!==flowVersion)return;
+  if(n===3){stop();stepsFinished=true;if(videoReady)finish();else waiting();return}
+  const row=$(`[data-step="${n}"]`);row.classList.add('done');row.lastElementChild.textContent='演示完成 ✓';n++;
+  $('#progressBar').style.width=n*25+'%';$('.progress-track').setAttribute('aria-valuenow',String(n*25));$('#percent').textContent=n*25+'%';$('#stageCaption').textContent=stages[n-1][0];
+  const next=$(`[data-step="${n}"]`);next.classList.add('current');next.lastElementChild.textContent=n===3&&preview?'加载案例视频…':'演示中…';
+ }
+ $('[data-step="0"]').classList.add('current');$('[data-step="0"]').lastElementChild.textContent='演示中…';timer=setInterval(tick,850);
+};
 for(const dialog of [$('#processDialog'),$('#projectDialog')])dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom){dialog=== $('#processDialog')?closeProcess():dialog.close()}});
 
 
