@@ -8,6 +8,19 @@ document.querySelectorAll('[data-play]').forEach(button=>button.addEventListener
 document.querySelector('#featuredPlay').addEventListener('click',()=>playCatalogVideo('coffee',document.querySelector('#sampleVideo'),document.querySelector('#featuredPlay'),document.querySelector('#videoLoadStatus')));
 document.querySelectorAll('[data-download]').forEach(button=>button.addEventListener('click',async()=>{const label=button.textContent;button.disabled=true;try{const entry=VIDEO_CATALOG.find(v=>v.id===button.dataset.download);const url=await videoSource(entry.id,p=>button.textContent='加载 · '+p+'%');const a=document.createElement('a');a.href=url;a.download=entry.download;document.body.append(a);a.click();a.remove()}catch{toast('视频下载失败，请检查网络后重试。')}finally{button.disabled=false;button.textContent=label}}));
 document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});document.querySelectorAll('.gallery-card').forEach(card=>{const hide=button.dataset.filter!=='全部'&&card.dataset.category!==button.dataset.filter;card.hidden=hide;if(hide)card.querySelector('video').pause()})}));
-window.prepareSampleVideo=async()=>{const video=document.querySelector('#resultPanel video');const link=document.querySelector('#videoDownload');link.textContent='正在加载示例视频…';link.setAttribute('aria-disabled','true');try{const url=await videoSource('coffee');video.src=url;video.load();link.href=url;link.removeAttribute('aria-disabled');link.textContent='下载示例成片 ↓'}catch{link.textContent='重新加载示例视频 ↻';toast('示例视频加载失败，点击重试。')}};
-const sampleDownload=document.querySelector('#videoDownload');sampleDownload.addEventListener('click',e=>{if(sampleDownload.getAttribute('aria-disabled')==='true'){e.preventDefault();window.prepareSampleVideo()}});
+let resultVideoVersion=0,resultCaseId=null;
+window.caseVideoInfo=id=>VIDEO_CATALOG.find(entry=>entry.id===id)||null;
+window.clearCaseVideo=()=>{resultVideoVersion++;resultCaseId=null;const video=document.querySelector('#resultPanel video');video.pause();video.removeAttribute('src');video.load();const link=document.querySelector('#videoDownload');link.removeAttribute('href');link.setAttribute('aria-disabled','true');document.querySelector('#resultVideoStatus').hidden=true;document.querySelector('#retryResultVideo').hidden=true;};
+window.prepareCaseVideo=async id=>{
+ const entry=window.caseVideoInfo(id);if(!entry)return;
+ const version=++resultVideoVersion;resultCaseId=id;
+ const video=document.querySelector('#resultPanel video'),link=document.querySelector('#videoDownload'),status=document.querySelector('#resultVideoStatus'),retry=document.querySelector('#retryResultVideo');
+ video.poster=entry.poster;video.setAttribute('aria-label',entry.title+'案例视频预览');document.querySelector('#resultVideoTitle').textContent=entry.title+' · 案例视频预览';
+ link.removeAttribute('href');link.setAttribute('aria-disabled','true');link.textContent='视频加载中…';retry.hidden=true;status.hidden=false;status.textContent='正在加载案例视频 · 0%';
+ try{const url=await videoSource(id,p=>{if(version===resultVideoVersion)status.textContent='正在加载案例视频 · '+p+'%'});if(version!==resultVideoVersion)return;video.src=url;video.load();link.href=url;link.download=entry.download;link.removeAttribute('aria-disabled');link.textContent='下载案例视频 ↓';status.textContent='视频已就绪，点击播放器即可预览。';}
+ catch{if(version!==resultVideoVersion)return;status.textContent='视频加载失败，请重试。';link.textContent='等待视频加载';retry.hidden=false;}
+};
+window.prepareSampleVideo=()=>window.prepareCaseVideo('coffee');
+const sampleDownload=document.querySelector('#videoDownload');sampleDownload.addEventListener('click',e=>{if(sampleDownload.getAttribute('aria-disabled')==='true')e.preventDefault();});
+document.querySelector('#retryResultVideo').addEventListener('click',()=>{if(resultCaseId)window.prepareCaseVideo(resultCaseId)});
 document.querySelectorAll('video').forEach(v=>v.addEventListener('play',()=>pauseOtherVideos(v)));
