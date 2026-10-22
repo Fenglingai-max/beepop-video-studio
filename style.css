@@ -20,3 +20,5 @@
 .manual-auth-link{display:block;color:#617b32;font-size:12px;line-height:1.8;margin:12px 0}.manual-connect{font-size:12px;color:#777e6c;margin:14px 0}.manual-connect label{display:block;margin:16px 0 8px}.manual-connect input{border:1px solid #dee5d1;border-radius:8px;padding:10px;width:100%;margin-bottom:12px}
 
 .workspace-notice{margin:18px 0;padding:20px 25px;border:1px solid #d9e5bd;border-radius:12px;background:#f5fae9;color:#566e33;font-size:12px;line-height:1.8}.workspace-notice p{margin:6px 0 12px;color:#7b8b65}.workspace-notice a{display:inline-flex;padding:9px 15px;background:var(--lime);border-radius:7px;cursor:pointer;font-weight:600}
+
+.companion-downloads{display:flex;flex-wrap:wrap;gap:10px}.companion-downloads .outline{margin:0}
