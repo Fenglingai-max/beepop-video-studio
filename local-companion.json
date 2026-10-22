@@ -1,17 +1,17 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "filename": "beepoptvc-local-macos.zip",
-  "bytes": 2436393,
-  "sha256": "8857ef051b8505c038b00a0d510cd1c42924d8b33932a41780d64cfbf17f4e64",
+  "bytes": 2444643,
+  "sha256": "510d2dde10e299d74ea219c8ab902c489c320bddb4ae67179338a5dd80ff7980",
   "parts": [
-    "media/local-companion-01.bin",
-    "media/local-companion-02.bin",
-    "media/local-companion-03.bin",
-    "media/local-companion-04.bin",
-    "media/local-companion-05.bin",
-    "media/local-companion-06.bin",
-    "media/local-companion-07.bin",
-    "media/local-companion-08.bin",
-    "media/local-companion-09.bin"
+    "media/local-companion-v2-01.bin",
+    "media/local-companion-v2-02.bin",
+    "media/local-companion-v2-03.bin",
+    "media/local-companion-v2-04.bin",
+    "media/local-companion-v2-05.bin",
+    "media/local-companion-v2-06.bin",
+    "media/local-companion-v2-07.bin",
+    "media/local-companion-v2-08.bin",
+    "media/local-companion-v2-09.bin"
   ]
 }

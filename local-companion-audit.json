@@ -1,0 +1,251 @@
+{
+  "purpose": "Publish the explicitly authorized companion repair to user-owned Fenglingai-max/beepop-video-studio",
+  "archive": {
+    "version": "0.2.0",
+    "filename": "beepoptvc-local-macos.zip",
+    "bytes": 2444643,
+    "sha256": "510d2dde10e299d74ea219c8ab902c489c320bddb4ae67179338a5dd80ff7980",
+    "parts": [
+      "media/local-companion-v2-01.bin",
+      "media/local-companion-v2-02.bin",
+      "media/local-companion-v2-03.bin",
+      "media/local-companion-v2-04.bin",
+      "media/local-companion-v2-05.bin",
+      "media/local-companion-v2-06.bin",
+      "media/local-companion-v2-07.bin",
+      "media/local-companion-v2-08.bin",
+      "media/local-companion-v2-09.bin"
+    ]
+  },
+  "files": [
+    {
+      "path": "beepoptvc-local/package.json",
+      "bytes": 500,
+      "sha256": "494a9e85eb53a937107814f207bd9f934861891f7ffc2cfe2952fca937e442fc",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/pnpm-lock.yaml",
+      "bytes": 98794,
+      "sha256": "b24ae606c7ba32b058cc703951ef0fbee09799fc3a9934430a619984faea9c3e",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/.gitignore",
+      "bytes": 36,
+      "sha256": "b9156ab60a19a869f4edc17640dec1f349ae821935461912be3f4497f8f3c40a",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/server.cjs",
+      "bytes": 12128,
+      "sha256": "70ca537412a4502eec84d9ebc17e87312988f062a39228cfec5b24cea01ae5f4",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/codex.cjs",
+      "bytes": 6027,
+      "sha256": "532d6e166dcd492d150588b4a9d9df826dd309e8dbfb81f3da68919594d4578c",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/pipeline.cjs",
+      "bytes": 10293,
+      "sha256": "52323d1b5c944fe590a896a3dc71acc064bde80ade61f0a9fae0e3c639ed14be",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/connect.html",
+      "bytes": 2378,
+      "sha256": "03b9b2861b9f31606f86b561d43f209004ffba345ed1db130bfcf359e22ee0e2",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/connect.js",
+      "bytes": 2181,
+      "sha256": "29d7a2ab841f319b1e478b418f24adfbe6145975a929b5e0e40b820857f97822",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/启动beepoptvc.command",
+      "bytes": 780,
+      "sha256": "20cc7c066f6e32350173e09e1e05617c71c8e1ae18c71b87571d858660c9482c",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/使用说明.txt",
+      "bytes": 2333,
+      "sha256": "3830ebb4621c4f34f77fe1c56990132dfe3f7abd68c788d2198d560b1364c304",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/tsconfig.json",
+      "bytes": 242,
+      "sha256": "82ed5007767ec9ce6ec258232a285b8ade6b2d43fab85aa9a04bb1047fff477c",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/remotion.config.ts",
+      "bytes": 206,
+      "sha256": "321d58a2ea3c4f13e9ae6086f1fde6037f7b79d73a051ae50c5b4cea982d60c3",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/product.json",
+      "bytes": 8269,
+      "sha256": "168484703fb8810a3b1a9373208266153844d23ba512c496653babb53106c312",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/public/motion-engine.d.ts",
+      "bytes": 114,
+      "sha256": "074bc91e8e97b4a27e80805a8d865a4e94fbae85e542a15d06521f466929c2bd",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/public/motion-engine.js",
+      "bytes": 7152,
+      "sha256": "ebf96e4cd189063938781d3180ce7c3cb60c1ada96b409dfb2f5acc9c5189a79",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/scripts/validate-inputs.cjs",
+      "bytes": 1971,
+      "sha256": "d0fda37332e695baf909427a7d79a33b5c8a416e9c3b0eaa50b6023d7debc2ae",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/scripts/render-kinetic.cjs",
+      "bytes": 1620,
+      "sha256": "ec3116d8fd961d1ff789b7d8a174100dee0fc5cf884f23eda19abfb33e3bacd7",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/scripts/check-motion.cjs",
+      "bytes": 1215,
+      "sha256": "6786938b51594d8aed93a2e6f7dacffa4e604209bf48f643cf2b951f198291ee",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/scripts/finalize.cjs",
+      "bytes": 2068,
+      "sha256": "590934ac3fb385b7dc7e1c98bf8ba4822b4db76a0cb2e9fc961e26da5655e498",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/src/data.ts",
+      "bytes": 4676,
+      "sha256": "3895a9605cc152ca0f4c0a17a46045893a1c82bc546da62583709fb8472cdf49",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/src/KineticTVC.tsx",
+      "bytes": 2177,
+      "sha256": "a77e569b83c8106524159bb71811cba73789fd9ff80b8cdeeb9d7b3139fe05c7",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/src/motion.ts",
+      "bytes": 1148,
+      "sha256": "ea5b6a4220500493d48037bbc4f890bf3c34339dda99003f16b75baf8172f929",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/src/Root.tsx",
+      "bytes": 677,
+      "sha256": "10c00425bc860e74fd28995ca33c71cdd90e976a705e8ca21c588546595b8690",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/src/index.ts",
+      "bytes": 88,
+      "sha256": "2e0e358282a1b998a65387c653b97c2bb2eb7aae94cf200fc0b8d919f7be73a6",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/engine/public/shared/playful-120.wav",
+      "bytes": 2880044,
+      "sha256": "d8e1c7d78045c7d94183bfe598f87acc666e484e25d14f5238fb098470143401",
+      "type": "original template music"
+    },
+    {
+      "path": "beepoptvc-local/test/server.test.cjs",
+      "bytes": 5048,
+      "sha256": "46571020beca815d7d087bd7dc215fe9f6f0a6d5b1522ed8e034cf85273ac283",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/workspace.html",
+      "bytes": 2876,
+      "sha256": "9831a2c8ade37f272a57f66494083227d26e377920bffcd1689ad7caab67f6b0",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/workspace.js",
+      "bytes": 9900,
+      "sha256": "d6f2d5124466d652e7e4c111c810169d1b1b14f0d146290d29051284e9738224",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    },
+    {
+      "path": "beepoptvc-local/workspace.css",
+      "bytes": 4276,
+      "sha256": "5ff52b9d64dda9b7bb7128c08fdf856a2d61f6d2396efde524a16d304b909e53",
+      "type": "reviewable UTF-8 source/config/lockfile/instructions"
+    }
+  ],
+  "excluded": [
+    "node_modules",
+    "data",
+    "credentials",
+    "personal assets",
+    "logs"
+  ],
+  "music_source": "TVC 2.0 template public/shared/playful-120.wav",
+  "chunks": [
+    {
+      "path": "media/local-companion-v2-01.bin",
+      "sha256": "c0e9a2eb967b02485947091740c36093c9d8c900344bb46954e3a2f273f5b93d",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-02.bin",
+      "sha256": "69399d1ebe0d591c2d0448d12f2c92923b546d9c6e7b7defb0cae3f0c4a52ee7",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-03.bin",
+      "sha256": "f9b83c37b192cf306fdc01570ae5cef5d8c919665b1b187840338197b0434efb",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-04.bin",
+      "sha256": "d68fdeab61518da541f1f00a1788c90478f8e92e491ac5a1f24d43c26c6592a7",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-05.bin",
+      "sha256": "c9007d0dbb1a3ca83955058ed2ddcb943f9d25cab82256fcf6beee043a7e84af",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-06.bin",
+      "sha256": "b06bf56cad29002399a3c5f56d75c6a6bcdbb2d640013142e320f90a241edaaa",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-07.bin",
+      "sha256": "9fc3d0d258208cf41bdfd61b8f0837343ecff7643218bde3c0cd814afe37cb28",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-08.bin",
+      "sha256": "bfa0d5b3b3034abec7ef0a5ee45fabb6aad404bbc959e199e07ef372db3b3a69",
+      "bytes": 300000
+    },
+    {
+      "path": "media/local-companion-v2-09.bin",
+      "sha256": "0bd02477f681ec837abc7d1056851ad18b0c3d33767178167e4259f1b2797459",
+      "bytes": 44643
+    }
+  ]
+}

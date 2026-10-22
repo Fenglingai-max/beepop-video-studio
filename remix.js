@@ -12,7 +12,7 @@
   window.restoreCaseContext=id=>{activeCase=names[id]?id:null;context.hidden=!activeCase;if(activeCase)showContext('复刻案例：'+names[activeCase],'商品图片、生成场景与原始产品信息已带入，可继续修改。');};
   async function materialBundle(id,signal){
     if(cache.has(id))return cache.get(id);
-    const response=await fetch('case-'+id+'.json?v=20261022-5',{signal});
+    const response=await fetch('case-'+id+'.json?v=20261022-13',{signal});
     if(!response.ok)throw new Error('案例资料暂未加载成功');
     const data=await response.json();
     if(data.id!==id||typeof data.description!=='string'||!data.description.trim()||data.description.length>10000||!Array.isArray(data.images)||data.images.length<1||data.images.length>6)throw new Error('案例资料不完整');
