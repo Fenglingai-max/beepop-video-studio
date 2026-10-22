@@ -22,7 +22,7 @@
   function imageFile(asset){const binary=atob(asset.dataUrl.split(',')[1]);const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));return new File([bytes],asset.name,{type:'image/webp'});}
   window.replicateCase=async id=>{
     if(!names[id])return;
-    reset();const version=++loadVersion;controller=new AbortController();const request=controller;
+    const creationEngine=document.querySelector('#model').value;reset();const version=++loadVersion;controller=new AbortController();const request=controller;
     busy(true);showContext('正在载入：'+names[id],'正在带入商品图片、生成场景和原始产品信息…');focusEditor();
     const timeout=setTimeout(()=>request.abort(),45000);
     try{
@@ -31,7 +31,7 @@
       const files=data.images.map(asset=>({file:imageFile(asset),label:asset.label}));
       images=files.map(item=>({...item,url:URL.createObjectURL(item.file)}));
       document.querySelector('#description').value=data.description;
-      setMode(false);restoreSettings(data.settings);renderImages();updateText();
+      setMode(false);restoreSettings(data.settings);if(window.updateGenerationMode){document.querySelector('#model').value=creationEngine;window.updateGenerationMode();}renderImages();updateText();
       window.restoreCaseContext(id);toast('已带入「'+names[id]+'」的 '+images.length+' 张图片和产品信息');
     }catch(err){
       if(version!==loadVersion)return;
