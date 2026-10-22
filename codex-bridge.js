@@ -31,14 +31,21 @@
   q('#model').value='tvc-2-local';q('#model').addEventListener('change',mode);
   q('#connectCodex').onclick=()=>{note(connection?'已连接 '+connection.account.email+'，可断开当前网站连接或重新授权。':'首次使用：下载并解压 macOS 助手，双击启动文件，再打开本机授权。');q('#codexDialog').showModal()};
   q('#closeCodex').onclick=()=>q('#codexDialog').close();
+  const companionParts=new Map();
+  async function companionPart(path){
+    if(companionParts.has(path))return companionParts.get(path);
+    const promise=(async()=>{for(let attempt=0;attempt<2;attempt++){try{const r=await fetch(path,{signal:AbortSignal.timeout(120000)});if(!r.ok)throw Error('助手文件下载失败。');return await r.arrayBuffer()}catch(e){if(attempt===1)throw e}}})();
+    companionParts.set(path,promise);promise.catch(()=>companionParts.delete(path));return promise;
+  }
   q('#downloadCompanion').onclick=async()=>{
     const button=q('#downloadCompanion');button.disabled=true;button.textContent='正在准备下载…';
-    try{const response=await fetch('local-companion.json?v=20261022-11',{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('下载清单暂时不可用。');const manifest=await response.json();
+    try{const response=await fetch('local-companion.json?v=20261022-12',{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('下载清单暂时不可用。');const manifest=await response.json();
       if(!Array.isArray(manifest.parts)||manifest.parts.length>20||manifest.parts.some(p=>!/^media\/local-companion-\d{2}\.bin$/.test(p))||manifest.bytes>6000000)throw Error('助手下载清单无效。');
-      const chunks=await Promise.all(manifest.parts.map(async path=>{const r=await fetch(path,{signal:AbortSignal.timeout(60000)});if(!r.ok)throw Error('助手文件下载失败。');return r.arrayBuffer()}));
+      const chunks=new Array(manifest.parts.length);let cursor=0,done=0;
+      await Promise.all(Array.from({length:3},async()=>{while(cursor<manifest.parts.length){const index=cursor++;chunks[index]=await companionPart(manifest.parts[index]);done++;button.textContent='下载助手 · '+Math.round(done/manifest.parts.length*100)+'%';}}));
       const blob=new Blob(chunks,{type:'application/zip'});if(blob.size!==manifest.bytes)throw Error('下载文件不完整，请重试。');
       const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer())),b=>b.toString(16).padStart(2,'0')).join('');if(digest!==manifest.sha256)throw Error('下载校验未通过，请重试。');
-      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='beepoptvc-local-macos.zip';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);note('助手已下载。解压后双击启动文件，再打开本机授权。');
+      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='beepoptvc-local-macos.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);note('助手已下载。解压后双击启动文件，再打开本机授权。');
     }catch(e){note('下载未完成：'+e.message+' 请点击下载重试。')}finally{button.disabled=false;button.textContent='下载 macOS 助手 ↓'}
   };
   q('#openLocalAuth').onclick=()=>{
