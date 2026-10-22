@@ -6,7 +6,7 @@
   const context=document.querySelector('#remixContext');
   function busy(on){panel.setAttribute('aria-busy',String(on));for(const id of ['generate','saveDraft','upload'])document.querySelector('#'+id).disabled=on;document.querySelector('#retryCase').hidden=true;}
   function showContext(title,note){context.hidden=false;document.querySelector('#remixTitle').textContent=title;document.querySelector('#remixNote').textContent=note;}
-  function focusEditor(){location.hash='create';panel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});document.querySelector('#description').focus({preventScroll:true});}
+  function focusEditor(){if(window.history?.replaceState)window.history.replaceState(null,'','#create');else location.hash='create';panel.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});document.querySelector('#description').focus({preventScroll:true});}
   window.currentCaseId=()=>activeCase;
   window.cancelCaseLoad=()=>{loadVersion++;controller?.abort();controller=null;busy(false);};
   window.restoreCaseContext=id=>{activeCase=names[id]?id:null;context.hidden=!activeCase;if(activeCase)showContext('复刻案例：'+names[activeCase],'商品图片、生成场景与原始产品信息已带入，可继续修改。');};
