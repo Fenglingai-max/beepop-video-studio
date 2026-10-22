@@ -1,0 +1,22 @@
+{
+  "name": "beepoptvc-local",
+  "version": "0.3.0",
+  "private": true,
+  "description": "TVC 2.0 local companion using each user's own Codex sign-in",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node --test test/*.test.cjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.506",
+    "remotion": "4.0.506",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "typescript": "5.9.2",
+    "@types/react": "19.1.12",
+    "sharp": "0.34.5"
+  }
+}

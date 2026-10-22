@@ -1,46 +1,37 @@
-// Public input is transferred to a top-level local workspace; generation uses same-origin requests.
 (function(){
- 'use strict';
- const q=s=>document.querySelector(s),BASE='http://127.0.0.1:47831',demo=q('#generate').onclick,originalVoices=q('#voice').innerHTML;
- const parts=new Map();let pending=null;
- function note(text){q('#codexMessage').textContent=text}
- function mode(){const local=q('#model').value==='tvc-2-local';
-  for(const option of q('#duration').options)option.disabled=local&&option.value!=='15';
-  for(const option of q('#ratio').options)option.disabled=local&&option.value!=='16:9';
-  q('#duration').disabled=local;q('#ratio').disabled=local;q('#voice').disabled=local;q('#taskConsentRow').hidden=true;
-  if(local){q('#duration').value='15';q('#ratio').value='16:9';if(q('#voice').options[0]?.value!=='local:pending'){const o=document.createElement('option');o.value='local:pending';o.textContent='打开本机工作台后选择';q('#voice').replaceChildren(o)}}
-  else if(q('#voice').options[0]?.value==='local:pending')q('#voice').innerHTML=originalVoices;
-  q('.voice-field small').textContent=local?'在本机窗口选择':'10 款预设';
-  q('#generate').innerHTML=local?'在本机制作 <span>↗</span>':'预览制作流程 <span>↗</span>';
-  q('.model-pill').textContent=local?'TVC 2.0 · Codex + Remotion':'See Dance 2.5 · 预设';
-  q('#selectionSummary').textContent=local?'15 秒 · 横版 16:9 · 本机英文配音':q('#duration').value+' 秒 · '+q('#ratio').value+' · 配音预设';
-  q('#settingHelp').textContent=local?'TVC 2.0 · 在本机窗口核对账号、选择配音并确认生成。商品资料会自动带入。':'声线与模型为待接入预设；流程演示使用已有案例视频。';
-  q('.prototype-note').textContent=local?'官网负责填写与案例复刻，本机工作台负责授权和生成。打开工作台不会消耗额度，确认生成后才会使用自己的 Codex。':'流程演示不会生成新视频或消耗额度。';
-  q('#codexStatus').textContent='本机工作台制作 · Safari / Chrome';q('#connectCodex').textContent='连接我的 Codex';q('#disconnectCodex').hidden=true;
- }
- window.updateGenerationMode=mode;q('#model').value='tvc-2-local';q('#model').addEventListener('change',mode);
- q('#connectCodex').onclick=()=>{note('首次使用请下载并启动最新版 macOS 助手，再打开本机工作台。账号与额度确认都在本机完成。');q('#codexDialog').showModal()};
- q('#closeCodex').onclick=()=>q('#codexDialog').close();q('#previewDemo').onclick=()=>demo();
- async function part(path){if(parts.has(path))return parts.get(path);const promise=(async()=>{for(let i=0;i<2;i++){try{const r=await fetch(path,{signal:AbortSignal.timeout(120000)});if(!r.ok)throw Error('助手文件下载失败。');return await r.arrayBuffer()}catch(e){if(i)throw e}}})();parts.set(path,promise);promise.catch(()=>parts.delete(path));return promise}
- q('#downloadCompanion').onclick=async()=>{const button=q('#downloadCompanion');button.disabled=true;button.textContent='正在准备下载…';
-  try{const response=await fetch('local-companion.json?v=20261022-13',{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('下载清单暂时不可用。');const m=await response.json();
-   if(!Array.isArray(m.parts)||m.parts.length>20||m.parts.some(p=>!/^media\/local-companion-v2-\d{2}\.bin$/.test(p))||m.bytes>6000000)throw Error('助手下载清单无效。');
-   const chunks=new Array(m.parts.length);let cursor=0,done=0;await Promise.all(Array.from({length:3},async()=>{while(cursor<m.parts.length){const i=cursor++;chunks[i]=await part(m.parts[i]);done++;button.textContent='下载助手 · '+Math.round(done/m.parts.length*100)+'%';}}));
-   const blob=new Blob(chunks,{type:'application/zip'});if(blob.size!==m.bytes)throw Error('下载文件不完整。');const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer())),x=>x.toString(16).padStart(2,'0')).join('');if(hash!==m.sha256)throw Error('下载校验未通过。');
-   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='beepoptvc-local-macos.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);note('助手已下载。解压后双击启动文件，再打开本机工作台。');
-  }catch(e){note('下载未完成：'+e.message+' 请点击下载重试。')}finally{button.disabled=false;button.textContent='下载 macOS 助手 ↓'}
- };
- function launch(){const state=Array.from(crypto.getRandomValues(new Uint8Array(24)),x=>x.toString(16).padStart(2,'0')).join('');
-  pending={state,description:q('#description').value,images:images.map(x=>({file:x.file,label:x.label})),voice:q('#voice').value};
-  const caseId=typeof window.currentCaseId==='function'?window.currentCaseId():null;const url=BASE+'/workspace?origin='+encodeURIComponent(location.origin)+'&state='+state+(caseId?'&case='+encodeURIComponent(caseId):'');
-  q('#manualLocalLink').href=url;q('#manualLocalLink').textContent='手动打开本机制作窗口 ↗';q('#manualLocalLink').hidden=false;q('#workspaceLink').href=url;q('#workspaceNotice').hidden=false;
-  const popup=window.open(url,'beepoptvc-local-workspace','width=1100,height=860');note(popup?'已打开本机制作窗口，请在那里核对账号与资料，再确认生成。':'请点击手动打开本机制作窗口；如果仍无法打开，请启动最新版助手。');
- }
- q('#openLocalAuth').onclick=launch;
- window.addEventListener('message',e=>{if(e.origin!==BASE||!pending||e.data?.state!==pending.state)return;
-  if(e.data.type==='beepoptvc-workspace-ready')e.source?.postMessage({type:'beepoptvc-workspace-input',...pending},BASE);
-  if(e.data.type==='beepoptvc-workspace-received'){q('#codexStatus').textContent='本机工作台已接收商品资料';note('商品资料已带入本机工作台，请在那里确认生成。');}
- });
- q('#generate').onclick=()=>{if(q('#model').value!=='tvc-2-local')return demo();if(!q('#description').value.trim()||!images.length){error('请填写商品信息，并添加至少一张商品图。');q('#description').focus();return}error('');launch()};
- mode();
+'use strict';
+const q=s=>document.querySelector(s),RELAY='https://beepoptvc-background.lnajqk.chatgpt.site',API=RELAY+'/api/bridge/',KEY='beepoptvc-connection-v3',demo=q('#generate').onclick,originalVoices=q('#voice').innerHTML;
+let connection=null,device=null,pending=null,active=null,outputURL=null;try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved?.expiresAt>Date.now()&&/^[a-f0-9]{64}$/.test(saved.token)&&/^[a-f0-9-]{36}$/.test(saved.id))connection=saved}catch{}
+const note=text=>q('#codexMessage').textContent=text;
+async function api(route,{method='GET',data,body,raw=false,signal,timeout=60000}={}){const c=new AbortController(),abort=()=>c.abort(),timer=setTimeout(abort,timeout);if(signal?.aborted)c.abort();signal?.addEventListener('abort',abort,{once:true});try{const r=await fetch(API+route,{method,headers:{...(connection?{Authorization:'Bearer '+connection.token}:{}),...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):body,signal:c.signal,cache:'no-store'});if(!r.ok){let d;try{d=await r.json()}catch{}if(r.status===401){connection=null;device=null;localStorage.removeItem(KEY);mode()}throw Object.assign(Error(d?.error||'连接暂时不可用，请稍后重试。'),{status:r.status})}return raw?r.blob():r.json()}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort)}}
+function mode(){const local=q('#model').value==='tvc-2-local',previous=q('#voice').value;
+ for(const o of q('#duration').options)o.disabled=local&&o.value!=='15';for(const o of q('#ratio').options)o.disabled=local&&o.value!=='16:9';q('#duration').disabled=local;q('#ratio').disabled=local;q('#voice').disabled=local&&!device?.capabilities?.voices?.length;q('#taskConsentRow').hidden=true;if(q('.local-badge'))q('.local-badge').hidden=true;
+ if(local){q('#duration').value='15';q('#ratio').value='16:9';const voices=device?.capabilities?.voices||[{id:'local:Samantha',label:'Samantha · 英文女声'}];q('#voice').replaceChildren(...voices.map(v=>{const o=document.createElement('option');o.value=v.id;o.textContent=v.label;return o}));if(voices.some(v=>v.id===previous))q('#voice').value=previous}
+ else if(q('#voice').options[0]?.value?.startsWith('local:'))q('#voice').innerHTML=originalVoices;
+ q('.voice-field small').textContent=local?'英文配音':'10 款预设';q('#generate').innerHTML=active?'正在生成…':local?'生成视频 <span>↗</span>':'预览制作流程 <span>↗</span>';q('#generate').disabled=Boolean(active)||q('#upload').disabled;
+ q('.model-pill').textContent=local?'TVC 2.0 · Codex + Remotion':'See Dance 2.5 · 预设';q('#selectionSummary').textContent=local?'15 秒 · 横版 16:9 · 英文配音':q('#duration').value+' 秒 · '+q('#ratio').value+' · 配音预设';
+ q('#settingHelp').textContent=local?'理解商品 → Codex 生成场景 → 配音与字幕 → 视频成片':'流程演示使用已有案例，不提交真实生成任务。';q('.prototype-note').textContent=local?'点击生成即使用已连接账号的 Codex 额度。制作完成后，直接在这里预览和下载。':'流程演示不会生成新视频或消耗额度。';
+ q('#codexStatus').textContent=device?.online?'已连接 · '+device.account.email:connection?'助手暂未上线，启动后即可生成':'首次使用请连接自己的 Codex';q('#connectCodex').textContent=connection?'我的 Codex ✓':'连接我的 Codex';q('#disconnectCodex').hidden=!connection;
+}
+window.updateGenerationMode=mode;q('#model').value='tvc-2-local';q('#model').addEventListener('change',mode);q('#previewDemo').onclick=()=>demo();
+function connect(input=null){const state=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');pending={state,input,created:Date.now()};const url=RELAY+'/connect?origin='+encodeURIComponent(location.origin)+'&state='+state;q('#manualLocalLink').href=url;q('#manualLocalLink').textContent='打开账号连接页面 ↗';q('#manualLocalLink').hidden=false;pending.popup=window.open(url,'beepoptvc-account-connect','width=650,height=820');note('请完成首次连接授权。连接后回到此页制作和预览视频。')}
+q('#connectCodex').onclick=()=>{if(active){q('#generationDialog').showModal();return}note(connection?'已连接自己的 Codex。请保持助手运行，官网提交任务后会在后台制作。':'首次使用需要启动 macOS 助手，再连接自己的账号。');q('#codexDialog').showModal()};q('#closeCodex').onclick=()=>q('#codexDialog').close();q('#openLocalAuth').onclick=()=>connect();
+q('#disconnectCodex').onclick=async()=>{if(active)return note('请先完成或取消正在制作的任务。');try{await api('device',{method:'DELETE'})}catch{}connection=null;device=null;localStorage.removeItem(KEY);mode();note('已断开官网连接。')};
+window.addEventListener('message',async e=>{const d=e.data;if(e.origin!==RELAY||d?.type!=='beepoptvc-relay-connected'||!pending||d.state!==pending.state||pending.popup&&e.source!==pending.popup||!d.connection||d.device?.id!==d.connection.id||!/^[a-f0-9]{64}$/.test(d.connection.token||''))return;
+ connection={...d.connection,expiresAt:d.device.expiresAt};localStorage.setItem(KEY,JSON.stringify(connection));device=d.device;const input=pending.input,recent=Date.now()-pending.created<10*60000;pending=null;mode();q('#codexDialog').close();note('已连接，可以直接生成视频。');if(input&&recent)start(input);
+});
+const pause=(ms,signal)=>new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(t);reject(Error('任务已取消。'))},t=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve()},ms);signal.addEventListener('abort',abort,{once:true})});
+function progress(n,text){q('#realProgress').style.width=n+'%';q('#realPercent').textContent=n+'%';q('#realStage').textContent=text;q('#realProgressTrack').setAttribute('aria-valuenow',n)}
+function notice(title){q('#workspaceNotice').hidden=false;q('#workspaceNotice b').textContent=title;q('#workspaceNotice p').textContent='任务进度、视频预览和下载均在当前页面完成。';q('#workspaceLink').href='#';q('#workspaceLink').textContent='查看制作进度 ↗';q('#workspaceLink').onclick=e=>{e.preventDefault();q('#generationDialog').showModal()}}
+function clearVideo(){q('#realResult').hidden=true;q('#retryRealVideo').hidden=true;q('#realVideo').pause();q('#realVideo').removeAttribute('src');q('#realVideo').load();if(outputURL)URL.revokeObjectURL(outputURL);outputURL=null}
+async function showVideo(job){clearVideo();progress(98,'正在完整加载成片');try{const blob=await api('jobs/'+job.id+'/video',{raw:true,signal:job.controller.signal,timeout:300000});if(blob.size<1000||!blob.type.startsWith('video/'))throw Error('成片文件不完整。');outputURL=URL.createObjectURL(blob);const v=q('#realVideo');await new Promise((resolve,reject)=>{const timer=setTimeout(()=>finish(Error('预览加载超时，请重试。')),20000);function finish(e){clearTimeout(timer);v.onloadeddata=null;v.onerror=null;e?reject(e):resolve()}v.onloadeddata=()=>finish();v.onerror=()=>finish(Error('浏览器暂时无法播放，请重试加载。'));v.src=outputURL;v.load()});q('#realDownload').href=outputURL;q('#realResult').hidden=false;q('#realTitle').textContent='你的视频已完成';progress(100,'成片已就绪');notice('你的视频已完成');q('#workspaceLink').textContent='预览和下载视频 ↗';return true}catch(e){q('#realTitle').textContent='成片等待加载';progress(98,e.message);q('#retryRealVideo').hidden=false;q('#retryRealVideo').textContent='重新加载已完成的视频';q('#retryRealVideo').onclick=()=>showVideo(job);return false}}
+async function monitor(job){let failures=0;while(true){if(job.controller.signal.aborted)throw Error('任务已取消。');let state;try{state=await api('jobs/'+job.id,{signal:job.controller.signal,timeout:30000});failures=0}catch(e){if(e.status===401||e.status===404||e.status===410||++failures>8)throw e;progress(job.percent||2,'正在恢复连接，任务仍在后台制作');await pause(2000,job.controller.signal);continue}job.percent=state.percent;progress(Math.min(98,state.percent),state.message);if(state.status==='completed'){q('#cancelReal').hidden=true;await showVideo(job);return}if(['failed','cancelled'].includes(state.status)){job.ended=true;throw Error(state.message)}await pause(1800,job.controller.signal)}}
+async function start(input){if(active)return;const job={id:crypto.randomUUID(),controller:new AbortController(),submitted:false,queued:false,percent:0};active=job;mode();error('');q('#realTitle').textContent='正在生成你的视频';q('#realMessage').textContent='Codex 将理解商品、生成两张产品场景图，再完成配音、字幕与视频。';q('#cancelReal').hidden=false;q('#generationDialog').showModal();clearVideo();notice('正在生成你的视频');progress(0,'检查账号连接');
+ try{device=await api('device');if(!device.online)throw Error('请先启动已连接的 Codex 助手。');const voice=device.capabilities.voices.some(v=>v.id===input.voice)?input.voice:device.capabilities.voices[0]?.id;if(!voice)throw Error('未找到可用声线。');const images=input.images.map(x=>({name:x.name,type:x.type,bytes:x.size}));const payload={id:job.id,description:input.description,images,voice,duration:'15',ratio:'16:9',model:'tvc-2-local',consent:true};
+  await api('jobs',{method:'POST',data:payload,signal:job.controller.signal});job.submitted=true;for(let i=0;i<input.images.length;i++){progress(1,'正在上传商品图片 '+(i+1)+' / '+input.images.length);await api('jobs/'+job.id+'/images/'+i,{method:'PUT',body:input.images[i],signal:job.controller.signal,timeout:180000})}await api('jobs/'+job.id+'/ready',{method:'POST',data:{},signal:job.controller.signal});job.queued=true;await monitor(job);
+ }catch(e){if(job.submitted&&!job.queued){try{await api('jobs/'+job.id,{method:'DELETE'})}catch{}job.ended=true}q('#realTitle').textContent=job.controller.signal.aborted?'任务已取消':'制作暂未完成';q('#realMessage').textContent=e.message;error(e.message);if(job.submitted&&!job.ended&&!job.controller.signal.aborted){q('#retryRealVideo').hidden=false;q('#retryRealVideo').textContent='恢复任务进度';q('#retryRealVideo').onclick=async()=>{q('#retryRealVideo').hidden=true;active=job;q('#cancelReal').hidden=false;mode();try{await monitor(job)}catch(e){q('#realMessage').textContent=e.message}finally{active=null;q('#cancelReal').hidden=true;mode()}}}else progress(0,e.message)}finally{active=null;mode();q('#cancelReal').hidden=true}}
+q('#cancelReal').onclick=async()=>{if(!active)return;const job=active;if(job.submitted)try{await api('jobs/'+job.id,{method:'DELETE'})}catch{}job.controller.abort()};q('#closeReal').onclick=()=>q('#generationDialog').close();
+q('#generate').onclick=()=>{if(q('#model').value!=='tvc-2-local')return demo();if(active)return;if(!q('#description').value.trim()||!images.length){error('请填写商品信息，并添加至少一张商品图。');q('#description').focus();return}const files=images.map(x=>x.file);if(files.reduce((n,f)=>n+f.size,0)>50*1024*1024)return error('商品图片合计不能超过 50 MB。');const input={description:q('#description').value,images:files,voice:q('#voice').value};if(!connection){q('#codexDialog').showModal();connect(input);return}return start(input)};
+mode();if(connection)api('device').then(d=>{device=d;mode()}).catch(()=>mode());setInterval(()=>{if(connection&&!active)api('device').then(d=>{device=d;mode()}).catch(()=>{})},12000);
+
 })();
