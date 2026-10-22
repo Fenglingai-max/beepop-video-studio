@@ -1,2 +1,9 @@
-# beepop-video-studio
-BeePOP-style product video studio prototype with local drafts and a rendered TVC example.
+# beepoptvc
+
+商品视频制作交互原型，包含7条完整测试视频、10款声线预设、横版/竖版和API模型预设。
+
+声线和模型尚未接入实际生成服务。商品图片与草稿仅保存在访客浏览器内。
+
+视频为网页压缩副本，点击播放时加载；原始测试成片单独保留。
+
+视觉参考：https://beepop.ai/zh
