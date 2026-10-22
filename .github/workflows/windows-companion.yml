@@ -1,0 +1,48 @@
+name: Windows companion verification
+on:
+  push:
+    paths:
+      - 'companion-v4/**'
+      - 'local-companion-v4.json'
+      - 'ci/**'
+      - '.github/workflows/windows-companion.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble and verify installer
+        run: node ci/assemble-companion.cjs .
+      - name: Extract
+        shell: pwsh
+        run: Expand-Archive -LiteralPath companion-verified.zip -DestinationPath smoke
+      - name: Install exact dependencies
+        working-directory: smoke/beepoptvc-local
+        run: npx --yes pnpm@11.25.0 install --frozen-lockfile --ignore-scripts --fetch-timeout=600000
+      - name: Prepare pinned neural voice and render browser
+        working-directory: smoke/beepoptvc-local
+        shell: pwsh
+        run: |
+          node setup-voice.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node node_modules/@remotion/cli/remotion-cli.js browser ensure
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Native Codex handshake, actual neural speech and 15-second render
+        run: node ci/companion-smoke.cjs smoke/beepoptvc-local
+      - name: Save verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-companion-evidence
+          path: |
+            smoke/beepoptvc-local/data/ci-summary.json
+            smoke/beepoptvc-local/data/neural-voice-sample.wav
+            smoke/beepoptvc-local/data/ci-fixture/out/product.mp4
+            smoke/beepoptvc-local/data/ci-fixture/voice-production.json
