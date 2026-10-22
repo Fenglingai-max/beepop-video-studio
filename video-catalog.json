@@ -74,43 +74,6 @@
     "download": "beepoptvc_saturn.mp4"
   },
   {
-    "id": "coffee-before",
-    "title": "咖啡罐 · 优化前",
-    "category": "家居",
-    "description": "保留早期版本，方便对照镜头编排。",
-    "duration": 20,
-    "poster": "media/coffee-before.jpg",
-    "parts": [
-      "media/coffee-before-01.bin",
-      "media/coffee-before-02.bin",
-      "media/coffee-before-03.bin",
-      "media/coffee-before-04.bin",
-      "media/coffee-before-05.bin"
-    ],
-    "bytes": 1468421,
-    "sha256": "58ac8e0837260e574e54134a13ab8052937e5a3d47efff89c8e51fd84502d62f",
-    "download": "beepoptvc_coffee-before.mp4"
-  },
-  {
-    "id": "coffee-after",
-    "title": "咖啡罐 · 后半段优化",
-    "category": "家居",
-    "description": "后半段商品关系、细节与收尾优化。",
-    "duration": 20,
-    "poster": "media/coffee-after.jpg",
-    "parts": [
-      "media/coffee-after-01.bin",
-      "media/coffee-after-02.bin",
-      "media/coffee-after-03.bin",
-      "media/coffee-after-04.bin",
-      "media/coffee-after-05.bin",
-      "media/coffee-after-06.bin"
-    ],
-    "bytes": 1580709,
-    "sha256": "fd890ade32ed55b08de61db43300ee6d7b89a55bd342db07cc60c2dcf92463b7",
-    "download": "beepoptvc_coffee-after.mp4"
-  },
-  {
     "id": "cat-basic",
     "title": "猫玩具 · 早期测试",
     "category": "宠物",
