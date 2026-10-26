@@ -26,6 +26,17 @@ jobs:
       - name: Install exact dependencies
         working-directory: smoke/Windows 中文 test/beepoptvc-local
         run: npx --yes pnpm@11.25.0 install --frozen-lockfile --ignore-scripts --fetch-timeout=600000
+      - name: Check automatic runtime preparation before large model downloads
+        working-directory: smoke/Windows 中文 test/beepoptvc-local
+        shell: cmd
+        env:
+          BEEPOP_FORCE_PORTABLE: '1'
+        run: |
+          chcp 65001 >nul
+          call prepare-runtime.cmd
+          if errorlevel 1 exit /b 1
+          "%BEEPOP_NODE%" -p "process.versions.node+':'+process.arch"
+          if errorlevel 1 exit /b 1
       - name: Prepare pinned neural voice and render browser
         working-directory: smoke/Windows 中文 test/beepoptvc-local
         shell: pwsh
