@@ -1,0 +1,4 @@
+'use strict';
+// Disposable Windows CI service: no account, no OpenAI calls, no user materials.
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');const port=+process.env.BEEPOP_PORT||47845;
+const server=http.createServer((req,res)=>{res.setHeader('Content-Type','application/json');if(req.url==='/health')return res.end(JSON.stringify({service:'beepoptvc-local',version:'0.4.1',ready:true,failed:false}));if(req.url==='/service/stop'&&req.method==='POST'){if(req.headers['x-beepop-service']!==process.env.BEEPOP_SERVICE_TOKEN){res.statusCode=403;return res.end('{}')}if(fs.existsSync(path.join(__dirname,'data/fixture-active'))){res.statusCode=409;return res.end('{}')}res.end('{"ok":true}');return setTimeout(()=>server.close(()=>process.exit()),30)}res.statusCode=404;res.end('{}')});server.listen(port,'127.0.0.1');

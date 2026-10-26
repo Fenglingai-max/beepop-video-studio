@@ -1,0 +1,76 @@
+name: Windows connection update
+on:
+  push:
+    paths:
+      - 'windows-network/**'
+      - '.github/workflows/windows-network.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-network-update
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+      - name: Test proxy forwarding, loopback bypass and gateway errors
+        run: node --test windows-network/network.test.cjs
+      - name: Build small native update
+        shell: pwsh
+        run: ./windows-network/build.ps1
+      - name: Test native update, active-task protection and repeated restart
+        shell: pwsh
+        run: |
+          $root=Join-Path $env:RUNNER_TEMP 'beepoptvc 网络更新 test'
+          $engine=Join-Path $root 'assistant'
+          $runtime=Join-Path $engine 'data/runtime/node-v24.19.0-win-x64'
+          New-Item -ItemType Directory -Force -Path $runtime | Out-Null
+          Copy-Item (Get-Command node).Source (Join-Path $runtime 'node.exe')
+          foreach($name in @('relay.cjs','windows-service.cjs','platform.cjs')){Copy-Item (Join-Path 'companion-v5' $name) (Join-Path $engine $name)}
+          Copy-Item windows-network/fixture-start.cjs (Join-Path $engine 'start.cjs')
+          [IO.File]::WriteAllText((Join-Path $engine 'data/fixture-private.txt'),'PRESERVE_FIXTURE')
+          $env:BEEPOP_PORT='47845'; $env:BEEPOP_NO_OPEN='1'
+          & (Join-Path $runtime 'node.exe') (Join-Path $engine 'windows-service.cjs') start
+          if($LASTEXITCODE -ne 0){throw 'Fixture service did not start'}
+          $exe=Join-Path $env:GITHUB_WORKSPACE 'network-dist/beepoptvc-Connection-Update.exe'
+          $p=Start-Process $exe -ArgumentList @('--self-test',('"'+$root+'"')) -PassThru
+          if(-not $p.WaitForExit(120000)){ $p.Kill(); throw 'Native update test timeout' }
+          if(Test-Path (Join-Path $root 'network-update-error.txt')){Get-Content (Join-Path $root 'network-update-error.txt')}
+          if($p.ExitCode -ne 0){throw 'Native updater test failed'}
+          Copy-Item (Join-Path $root 'network-update-test.json') network-dist/
+          Copy-Item (Join-Path $root 'network-update-preview.png') network-dist/
+          Get-Content network-dist/network-update-test.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-network-update
+          path: |
+            network-dist/
+            ${{ runner.temp }}/beepoptvc 网络更新 test/network-update-error.txt
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-network-update
+          path: network-output
+      - name: Publish verified connection update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          manifest=$(find network-output -name network-update.json -print -quit)
+          dir=$(dirname "$manifest")
+          tag=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).releaseTag)' "$manifest")
+          gh release create "$tag" --target "$GITHUB_SHA" --prerelease --title 'beepoptvc Windows 连接更新 0.6.1' --notes-file windows-network/RELEASE.md
+          gh release upload "$tag" "$dir/beepoptvc-Connection-Update.exe" "$dir/network-update.json" "$dir/README.txt" "$dir/network-update-source.zip" "$dir/network-update-test.json" "$dir/network-update-preview.png"

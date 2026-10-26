@@ -18,8 +18,8 @@ using Microsoft.Win32;
 
 [assembly: AssemblyTitle("beepoptvc 助手")]
 [assembly: AssemblyDescription("Native Windows launcher for the user's own local TVC assistant")]
-[assembly: AssemblyVersion("0.6.0.0")]
-[assembly: AssemblyFileVersion("0.6.0.0")]
+[assembly: AssemblyVersion("0.6.1.0")]
+[assembly: AssemblyFileVersion("0.6.1.0")]
 
 namespace BeePopAssistant {
     internal sealed class Snapshot {
@@ -30,7 +30,7 @@ namespace BeePopAssistant {
     internal sealed class EnvironmentFile { public EnvironmentFile() {} public string path; public long bytes; }
     internal sealed class EnvironmentFiles { public EnvironmentFiles() {} public List<EnvironmentFile> files; }
     internal sealed class Core : IDisposable {
-        public const string AppVersion = "0.6.0 完整版";
+        public const string AppVersion = "0.6.1 完整版";
         public const string Site = "https://fenglingai-max.github.io/beepop-video-studio/?source=windows-app#create";
         public const string NodeHash = "57f71ab3652e797d84acddc79c81cc9ff1c6ddb2a1974cdb83f00fee9bff4c73";
         public readonly string Root, Engine, LogPath;
@@ -150,6 +150,29 @@ namespace BeePopAssistant {
                 Directory.Delete(staging, true); if (Directory.Exists(backup)) Directory.Delete(backup, true);
             });
         }
+        bool NetworkPatchNeeded() {
+            foreach (string name in new string[] { "relay-network.cjs", "relay.cjs" }) {
+                string file = Path.Combine(Engine, name); if (!File.Exists(file)) return true;
+                using (Stream resource = Resource(name)) if (FileSha(file) != Sha(resource)) return true;
+            }
+            return false;
+        }
+        async Task InstallNetworkPatchAsync() {
+            if (!NetworkPatchNeeded()) return;
+            Report("network", "正在更新 Windows 网络兼容模块…");
+            await Task.Run(delegate {
+                string relay = Path.Combine(Engine, "relay.cjs");
+                if (File.Exists(relay)) {
+                    string hash = FileSha(relay), next; using (Stream r = Resource("relay.cjs")) next = Sha(r);
+                    if (hash != "b48ffe102de7edef078de4c87a1b548d7ff1c8cd26d53392c9232f0e87d88085" && hash != next) throw new InvalidDataException("当前连接模块经过其他修改，更新未覆盖该文件。");
+                }
+                foreach (string name in new string[] { "relay-network.cjs", "relay.cjs" }) {
+                    string file = Path.Combine(Engine, name), temporary = file + ".network-update";
+                    using (Stream input = Resource(name)) using (Stream output = File.Create(temporary)) input.CopyTo(output);
+                    if (File.Exists(file)) File.Replace(temporary, file, null); else File.Move(temporary, file);
+                }
+            });
+        }
         public async Task<string> EnsureNodeAsync() {
             string folder = Path.Combine(Engine, "data", "runtime"), node = Path.Combine(folder, "node-v24.19.0-win-x64", "node.exe");
             if (File.Exists(node)) {
@@ -184,9 +207,9 @@ namespace BeePopAssistant {
         }
         public async Task StartAsync() {
             Snapshot existing = await HealthAsync();
-            if (existing.Online && !existing.Failed) { Report(existing.Stage, existing.Ready ? "已有助手正在运行，可以打开官网。" : existing.Message); return; }
-            if (existing.Online && existing.Failed) { await StopAsync(); await WaitStoppedAsync(); }
-            await InstallPayloadAsync(); string node = await EnsureNodeAsync(); await InstallEnvironmentAsync(existing.Failed);
+            if (existing.Online && !existing.Failed && !NetworkPatchNeeded()) { Report(existing.Stage, existing.Ready ? "已有助手正在运行，可以打开官网。" : existing.Message); return; }
+            if (existing.Online) { await StopAsync(); await WaitStoppedAsync(); }
+            await InstallPayloadAsync(); string node = await EnsureNodeAsync(); await InstallEnvironmentAsync(existing.Failed); await InstallNetworkPatchAsync();
             Report("starting", "3/3 正在检查本机配音与视频渲染组件，无需下载模型…");
             Dictionary<string, string> env = new Dictionary<string, string>();
             env["BEEPOP_PORT"] = Port.ToString(); env["BEEPOP_NO_OPEN"] = "1";
@@ -281,20 +304,20 @@ namespace BeePopAssistant {
     internal static class Program {
         public static bool Background;
         public static readonly string AppRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "beepoptvc");
-        public static readonly string InstalledExe = Path.Combine(AppRoot, "beepoptvc-Assistant-0.6.0.exe");
+        public static readonly string InstalledExe = Path.Combine(AppRoot, "beepoptvc-Assistant-0.6.1.exe");
         [DllImport("user32.dll")] static extern bool SetProcessDPIAware();
         [STAThread] public static int Main(string[] args) {
             try { SetProcessDPIAware(); } catch { }
             Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
             if (args.Length == 2 && args[0] == "--self-test") return SelfTest.Run(args[1]);
             Background = args.Length > 0 && args[0] == "--background";
-            bool created; using (Mutex singleton = new Mutex(true, "Local\\beepoptvcNativeAssistant06", out created)) {
-                if (!created) { using (EventWaitHandle ev = new EventWaitHandle(false, EventResetMode.AutoReset, "Local\\beepoptvcShow06")) ev.Set(); return 0; }
+            bool created; using (Mutex singleton = new Mutex(true, "Local\\beepoptvcNativeAssistant061", out created)) {
+                if (!created) { using (EventWaitHandle ev = new EventWaitHandle(false, EventResetMode.AutoReset, "Local\\beepoptvcShow061")) ev.Set(); return 0; }
                 try {
                     Directory.CreateDirectory(AppRoot); string current = Assembly.GetExecutingAssembly().Location;
                     if (!String.Equals(Path.GetFullPath(current), InstalledExe, StringComparison.OrdinalIgnoreCase)) File.Copy(current, InstalledExe, true);
                     try { CreateDesktopShortcut(); using (RegistryKey k = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", true)) { if (k != null && k.GetValue("beepoptvcAssistant") != null) k.SetValue("beepoptvcAssistant", "\"" + InstalledExe + "\" --background"); } } catch { }
-                    using (Core core = new Core(AppRoot, 47831)) using (MainForm form = new MainForm(core, true)) using (EventWaitHandle ev = new EventWaitHandle(false, EventResetMode.AutoReset, "Local\\beepoptvcShow06")) {
+                    using (Core core = new Core(AppRoot, 47831)) using (MainForm form = new MainForm(core, true)) using (EventWaitHandle ev = new EventWaitHandle(false, EventResetMode.AutoReset, "Local\\beepoptvcShow061")) {
                         RegisteredWaitHandle waiter = ThreadPool.RegisterWaitForSingleObject(ev, delegate { if (form.IsHandleCreated && !form.IsDisposed) form.BeginInvoke((Action)delegate { form.Show(); form.WindowState = FormWindowState.Normal; form.Activate(); }); }, null, Timeout.Infinite, false);
                         try { Application.Run(form); } finally { waiter.Unregister(null); }
                     }
