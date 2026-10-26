@@ -329,7 +329,7 @@ namespace BeePopAssistant {
                         File.WriteAllText(guard, Core.ResourceText("offline-guard.cjs"), Encoding.UTF8);
                         Environment.SetEnvironmentVariable("NODE_OPTIONS", "--require \"" + guard.Replace('\\', '/') + "\"");
                         await core.StartAsync(); Snapshot state = null;
-                        for (int i = 0; i < 300; i++) { state = await core.HealthAsync(); if (state.Failed) throw new Exception(state.Message); if (state.Ready) break; await Task.Delay(1000); }
+                        for (int i = 0; i < 300; i++) { if (File.Exists(Path.Combine(root, "offline-guard.cjs.blocked.log"))) throw new Exception("Offline preparation attempted external download: " + File.ReadAllText(Path.Combine(root, "offline-guard.cjs.blocked.log"))); state = await core.HealthAsync(); if (state.Failed) throw new Exception(state.Message); if (state.Ready) break; await Task.Delay(1000); }
                         Assert(state != null && state.Ready, "embedded helper reaches ready");
                     }).GetAwaiter().GetResult();
                     Snapshot ready = core.HealthAsync().GetAwaiter().GetResult();
@@ -345,7 +345,7 @@ namespace BeePopAssistant {
                     File.Delete(Path.Combine(core.Engine, "node_modules", ".remotion", "chrome-headless-shell", "win64", "chrome-headless-shell-win64", "chrome-headless-shell.exe"));
                     Task.Run(async delegate {
                         await core.StartAsync(); Snapshot state = null;
-                        for (int i = 0; i < 300; i++) { state = await core.HealthAsync(); if (state.Failed) throw new Exception(state.Message); if (state.Ready) break; await Task.Delay(1000); }
+                        for (int i = 0; i < 300; i++) { if (File.Exists(Path.Combine(root, "offline-guard.cjs.blocked.log"))) throw new Exception("Offline preparation attempted external download: " + File.ReadAllText(Path.Combine(root, "offline-guard.cjs.blocked.log"))); state = await core.HealthAsync(); if (state.Failed) throw new Exception(state.Message); if (state.Ready) break; await Task.Delay(1000); }
                         Assert(state != null && state.Ready, "missing-model repair without external network");
                         await core.StopAsync(); await core.WaitStoppedAsync();
                     }).GetAwaiter().GetResult();

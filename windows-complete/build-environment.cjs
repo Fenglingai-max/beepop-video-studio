@@ -20,6 +20,7 @@ function run(cmd,args,cwd=root){const r=spawnSync(cmd,args,{cwd,stdio:'inherit',
  const browser=await download('https://storage.googleapis.com/chrome-for-testing-public/149.0.7790.0/win64/chrome-headless-shell-win64.zip',browserZip);
  const browserRoot=path.join(root,'node_modules/.remotion/chrome-headless-shell/win64');
  run('powershell.exe',['-NoProfile','-Command','Expand-Archive -LiteralPath "'+browserZip+'" -DestinationPath "'+browserRoot+'" -Force']);
+ await fs.writeFile(path.join(root,'node_modules/.remotion/chrome-headless-shell/VERSION'),'149.0.7790.0');
  const lock=crypto.createHash('sha256').update(await fs.readFile(path.join(root,'pnpm-lock.yaml'))).digest('hex');await fs.writeFile(path.join(root,'data/dependencies.sha256'),lock);
  // Produce a reproducible file manifest; reject links escaping the packaged tree.
  const files=[];async function walk(dir){for(const e of await fs.readdir(dir,{withFileTypes:true})){const p=path.join(dir,e.name),relative=path.relative(root,p).replaceAll('\\','/');if(e.isSymbolicLink())throw Error('Unexpected package link: '+relative);if(e.isDirectory())await walk(p);else{const b=await fs.readFile(p);files.push({path:relative,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')});}}}
