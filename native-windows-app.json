@@ -1,0 +1,12 @@
+{
+  "version": "0.5.0-preview",
+  "filename": "beepoptvc-Assistant.exe",
+  "bytes": 39961600,
+  "sha256": "3558f0a3a2168dc2e7a0772ab0a3deb700169db5f1af1d464c9db865028d58e2",
+  "payloadSha256": "4d4a4ecfacd5660fd0bff4242597935a6ef5398f94602fc81348e9b8f12d60a4",
+  "embeddedNodeSha256": "57f71ab3652e797d84acddc79c81cc9ff1c6ddb2a1974cdb83f00fee9bff4c73",
+  "sourceCommit": "c9131801bdd3cb91be9016407ffb33815857ab22",
+  "releaseTag": "windows-app-c9131801bdd3",
+  "signed": false,
+  "url": "https://github.com/Fenglingai-max/beepop-video-studio/releases/download/windows-app-c9131801bdd3/beepoptvc-Assistant.exe"
+}
