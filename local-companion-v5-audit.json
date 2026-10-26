@@ -5,7 +5,7 @@
     "macOS arm64/x64"
   ],
   "assembly": "Unchanged approved 0.2 archive plus reviewable UTF-8 source patches; no new binary uploaded",
-  "sha256": "92f0c879a8f5b648fcfa32c29738e36f5a3c6f997fbd32a0b6cfbdce812bee21",
+  "sha256": "67fbce4f9114a3d9ceb8506664923494554718afb6ff343c4b1187e1ecf307e3",
   "files": [
     {
       "entry": "beepoptvc-local/package.json",
@@ -309,8 +309,8 @@
     },
     {
       "entry": "beepoptvc-local/prepare-runtime.cmd",
-      "bytes": 1675,
-      "sha256": "27ad7bc9d91b0a2ce4f957af40630ba6d349bf1b35235a38b85de03bfaf521ff",
+      "bytes": 2051,
+      "sha256": "aa63164bd2fd64ea568411ef224b3f661d61c188745870114172612d9cad2f2d",
       "type": "UTF-8 source/config/instructions"
     }
   ],
