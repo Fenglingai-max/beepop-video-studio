@@ -5,7 +5,7 @@
     "macOS arm64/x64"
   ],
   "assembly": "Unchanged approved 0.2 archive plus reviewable UTF-8 source patches; no new binary uploaded",
-  "sha256": "bdca32a0e43f25b7378220c726ee1b7bf9d4e1f97270556209d64cf07767f05c",
+  "sha256": "92f0c879a8f5b648fcfa32c29738e36f5a3c6f997fbd32a0b6cfbdce812bee21",
   "files": [
     {
       "entry": "beepoptvc-local/package.json",
@@ -63,8 +63,8 @@
     },
     {
       "entry": "beepoptvc-local/使用说明.txt",
-      "bytes": 4352,
-      "sha256": "69e607a821da49e5374c9ab24627eb5e2602f6443cb907b6e3acb167a45c2da4",
+      "bytes": 4689,
+      "sha256": "434fc9ccc464b1bb29d567b1fc6660e901575f05aa5df0f66c3b9fedfd16ebaf",
       "type": "UTF-8 source/config/instructions"
     },
     {
@@ -243,14 +243,14 @@
     },
     {
       "entry": "beepoptvc-local/start-beepoptvc.cmd",
-      "bytes": 410,
-      "sha256": "aa05590a5652ec6df615b161da339690c62a6039feaf6bc6ad4951d60001c0e5",
+      "bytes": 266,
+      "sha256": "79ea9e3e78997b9d010bae5b41498d736f34b192c73247fb543120483c3e5c4c",
       "type": "UTF-8 source/config/instructions"
     },
     {
       "entry": "beepoptvc-local/diagnose-beepoptvc.cmd",
-      "bytes": 244,
-      "sha256": "f38845ce0377dd3ca7087b1a90c2a7463b250a1417bdac7b51174a085e6e2989",
+      "bytes": 188,
+      "sha256": "8ae55fc9decf0ffd7c3aab8e2dbd70dc5c830e984de7cc1a981e6e23e16e5142",
       "type": "UTF-8 source/config/instructions"
     },
     {
@@ -285,26 +285,32 @@
     },
     {
       "entry": "beepoptvc-local/windows-service.cjs",
-      "bytes": 3417,
-      "sha256": "42df4db0fb6072cb3b33518ad7e5b1acfe941de6196d716666c61a806d533008",
+      "bytes": 3509,
+      "sha256": "76c324e33bfc39539700608af003396be7350897666d368aa99c05b3b9cc4d39",
       "type": "UTF-8 source/config/instructions"
     },
     {
       "entry": "beepoptvc-local/双击启动.cmd",
-      "bytes": 410,
-      "sha256": "aa05590a5652ec6df615b161da339690c62a6039feaf6bc6ad4951d60001c0e5",
+      "bytes": 266,
+      "sha256": "79ea9e3e78997b9d010bae5b41498d736f34b192c73247fb543120483c3e5c4c",
       "type": "UTF-8 source/config/instructions"
     },
     {
       "entry": "beepoptvc-local/停止助手.cmd",
-      "bytes": 409,
-      "sha256": "8c1444039a9ba028df728234080c43c41bec448028845555a1b684efaf7312ef",
+      "bytes": 265,
+      "sha256": "b40a7ec06b466b28a8e6af3b4176d7fc8c502ded56a7540f31ead89a3b7f0bfe",
       "type": "UTF-8 source/config/instructions"
     },
     {
       "entry": "beepoptvc-local/test/startup.test.cjs",
       "bytes": 3524,
       "sha256": "dcfd977356b8527edd616dd09d58a0470b78b8015b237c150b63c196c06ce379",
+      "type": "UTF-8 source/config/instructions"
+    },
+    {
+      "entry": "beepoptvc-local/prepare-runtime.cmd",
+      "bytes": 1675,
+      "sha256": "27ad7bc9d91b0a2ce4f957af40630ba6d349bf1b35235a38b85de03bfaf521ff",
       "type": "UTF-8 source/config/instructions"
     }
   ],

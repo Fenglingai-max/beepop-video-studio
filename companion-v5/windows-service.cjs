@@ -7,7 +7,7 @@ async function start(){require('./platform.cjs').createPlatform().supported();if
  const existing=await health();if(existing){console.log('检测到助手 '+existing.version+' 已在运行。');if(existing.version!=='0.4.1'){console.log('请使用原运行窗口关闭旧助手后再启动新版，避免打断正在制作的任务。');return}openStatus();return}
  await fsp.mkdir(data,{recursive:true});const secret=crypto.randomBytes(32).toString('hex');await fsp.writeFile(control,JSON.stringify({port,secret}),{mode:0o600});
  const out=fs.openSync(path.join(data,'service-output.log'),'a'),err=fs.openSync(path.join(data,'service-error.log'),'a');let child;
- try{child=spawn(process.execPath,[path.join(root,'start.cjs')],{cwd:root,detached:true,windowsHide:true,stdio:['ignore',out,err],env:{...process.env,BEEPOP_SERVICE_TOKEN:secret}});await new Promise((resolve,reject)=>{child.once('spawn',resolve);child.once('error',reject)});child.unref()}finally{fs.closeSync(out);fs.closeSync(err)}
+ try{child=spawn(process.execPath,[path.join(root,'start.cjs')],{cwd:root,detached:true,windowsHide:true,stdio:['ignore',out,err],env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+(process.env.PATH||process.env.Path||''),BEEPOP_SERVICE_TOKEN:secret}});await new Promise((resolve,reject)=>{child.once('spawn',resolve);child.once('error',reject)});child.unref()}finally{fs.closeSync(out);fs.closeSync(err)}
  for(let i=0;i<20;i++){const status=await health();if(status){console.log(status.ready?'助手已就绪，可关闭本窗口。':'助手正在后台准备，可关闭本窗口，浏览器将显示进度。');console.log(base+'/startup');console.log('需要停止时双击“停止助手.cmd”。');openStatus();return}await new Promise(r=>setTimeout(r,500))}
  throw Error('助手未能启动。请查看 data/service-error.log，或运行 diagnose-beepoptvc.cmd。')
 }
