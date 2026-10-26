@@ -2,8 +2,8 @@ name: Windows companion verification
 on:
   push:
     paths:
-      - 'companion-v4/**'
-      - 'local-companion-v4.json'
+      - 'companion-v5/**'
+      - 'local-companion-v5.json'
       - 'ci/**'
       - '.github/workflows/windows-companion.yml'
   workflow_dispatch:
@@ -34,6 +34,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node node_modules/@remotion/cli/remotion-cli.js browser ensure
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Startup readiness, local authorization and background lifetime
+        shell: pwsh
+        run: |
+          node smoke/beepoptvc-local/test/startup.test.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node smoke/beepoptvc-local/test/server.test.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node ci/startup-smoke.cjs smoke/beepoptvc-local
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Native Codex handshake, actual neural speech and 15-second render
         run: node ci/companion-smoke.cjs smoke/beepoptvc-local
       - name: Save verification evidence
@@ -42,6 +51,7 @@ jobs:
         with:
           name: windows-companion-evidence
           path: |
+            smoke/beepoptvc-local/data/startup-summary.json
             smoke/beepoptvc-local/data/ci-summary.json
             smoke/beepoptvc-local/data/neural-voice-sample.wav
             smoke/beepoptvc-local/data/ci-fixture/out/product.mp4

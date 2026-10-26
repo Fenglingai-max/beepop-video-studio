@@ -1,0 +1,205 @@
+{
+  "version": "0.4.1",
+  "filename": "beepoptvc-local-windows.zip",
+  "bytes": 2600577,
+  "sha256": "ca3f63ff4a5667785cd8e940d52b9560d3f9d53a8409a0675d11ce8776a7c6ce",
+  "base": {
+    "version": "0.2.0",
+    "filename": "beepoptvc-local-macos.zip",
+    "bytes": 2444643,
+    "sha256": "510d2dde10e299d74ea219c8ab902c489c320bddb4ae67179338a5dd80ff7980",
+    "parts": [
+      "media/local-companion-v2-01.bin",
+      "media/local-companion-v2-02.bin",
+      "media/local-companion-v2-03.bin",
+      "media/local-companion-v2-04.bin",
+      "media/local-companion-v2-05.bin",
+      "media/local-companion-v2-06.bin",
+      "media/local-companion-v2-07.bin",
+      "media/local-companion-v2-08.bin",
+      "media/local-companion-v2-09.bin"
+    ]
+  },
+  "patches": [
+    {
+      "path": "companion-v5/package.json",
+      "entry": "beepoptvc-local/package.json",
+      "bytes": 639,
+      "sha256": "c39738c141c92326cfa13944477952096c0a1230d265e0f05e37bb36c6f17ba3"
+    },
+    {
+      "path": "companion-v5/pnpm-lock.yaml",
+      "entry": "beepoptvc-local/pnpm-lock.yaml",
+      "bytes": 112785,
+      "sha256": "34c359424401d7c945ba65af495f1a0d521f69b9fe678455ccbcb3607e4e99f4"
+    },
+    {
+      "path": "companion-v5/server.cjs",
+      "entry": "beepoptvc-local/server.cjs",
+      "bytes": 16874,
+      "sha256": "39adb79989d97e90d1a7694b6c161a5857202f0c78fc136391fce7e4132bcfb4"
+    },
+    {
+      "path": "companion-v5/codex.cjs",
+      "entry": "beepoptvc-local/codex.cjs",
+      "bytes": 10003,
+      "sha256": "89238a92820806a4632fb3c18b64af3cd77b0419af7bff4179182f89edebec91"
+    },
+    {
+      "path": "companion-v5/pipeline.cjs",
+      "entry": "beepoptvc-local/pipeline.cjs",
+      "bytes": 13457,
+      "sha256": "fbb629e2beb2106dfb545d79522d540b074cc7572ed49131a8327fa3f4c1eeb9"
+    },
+    {
+      "path": "companion-v5/启动beepoptvc.command",
+      "entry": "beepoptvc-local/启动beepoptvc.command",
+      "bytes": 476,
+      "sha256": "92ba359ff124a79382bd43b3d0633645e8718a2ce3205dac67b7d5c41ea65a2c"
+    },
+    {
+      "path": "companion-v5/使用说明.txt",
+      "entry": "beepoptvc-local/使用说明.txt",
+      "bytes": 4352,
+      "sha256": "69e607a821da49e5374c9ab24627eb5e2602f6443cb907b6e3acb167a45c2da4"
+    },
+    {
+      "path": "companion-v5/engine/scripts/finalize.cjs",
+      "entry": "beepoptvc-local/engine/scripts/finalize.cjs",
+      "bytes": 2030,
+      "sha256": "a0103d758b2c3187aab03cbba5403c8c4add834c22944f40e08bc1d51a9e14d1"
+    },
+    {
+      "path": "companion-v5/workspace.html",
+      "entry": "beepoptvc-local/workspace.html",
+      "bytes": 2901,
+      "sha256": "002d056dc4ede4b3e517e7f250c702fd69c5b10c570aa305025f4d55f177ce91"
+    },
+    {
+      "path": "companion-v5/relay.cjs",
+      "entry": "beepoptvc-local/relay.cjs",
+      "bytes": 4917,
+      "sha256": "b48ffe102de7edef078de4c87a1b548d7ff1c8cd26d53392c9232f0e87d88085"
+    },
+    {
+      "path": "companion-v5/relay-connect.html",
+      "entry": "beepoptvc-local/relay-connect.html",
+      "bytes": 1388,
+      "sha256": "69286dad5e0269f78572a6e81840b455e818b5511c2075b92cf732f0d1ae6816"
+    },
+    {
+      "path": "companion-v5/relay-connect.js",
+      "entry": "beepoptvc-local/relay-connect.js",
+      "bytes": 2371,
+      "sha256": "6d2309d60f8b8ddd67ee9ac102a0aedead556a58cfc0150fcb32d0b4ccf848bf"
+    },
+    {
+      "path": "companion-v5/platform.cjs",
+      "entry": "beepoptvc-local/platform.cjs",
+      "bytes": 2843,
+      "sha256": "8d568e369122da390bcdd37556be34bd0cc700e38efdac64f3dd7286a6530034"
+    },
+    {
+      "path": "companion-v5/neural-voice.cjs",
+      "entry": "beepoptvc-local/neural-voice.cjs",
+      "bytes": 723,
+      "sha256": "028986ce22d14a8a168c13a0a073f04e6fdbd51856ad692c575f7e0e1f401047"
+    },
+    {
+      "path": "companion-v5/setup-voice.cjs",
+      "entry": "beepoptvc-local/setup-voice.cjs",
+      "bytes": 2494,
+      "sha256": "ab604678872a6c99bc64fda432e3ed41ac48095d44acb18fa04dc41d50f54789"
+    },
+    {
+      "path": "companion-v5/voice-worker.cjs",
+      "entry": "beepoptvc-local/voice-worker.cjs",
+      "bytes": 1718,
+      "sha256": "7c614235f0ce04d5beb1760a10a64c809eadef7d66e8c5f947ac3a2ede6b2c80"
+    },
+    {
+      "path": "companion-v5/voice-model.json",
+      "entry": "beepoptvc-local/voice-model.json",
+      "bytes": 812,
+      "sha256": "82adeb16f80d8ff90d83afe4b5aaa1ea84ec83ce3947179b89403d285941a85d"
+    },
+    {
+      "path": "companion-v5/start.cjs",
+      "entry": "beepoptvc-local/start.cjs",
+      "bytes": 5134,
+      "sha256": "41a319ca332c5ab8a40a8b5a6317b00792f75d267baf925017731f3776467555"
+    },
+    {
+      "path": "companion-v5/diagnose.cjs",
+      "entry": "beepoptvc-local/diagnose.cjs",
+      "bytes": 3938,
+      "sha256": "010ecf53befb118ebf3810d9a6f235c97ab4c35cc52a757d62b1ecdd857182b0"
+    },
+    {
+      "path": "companion-v5/start-beepoptvc.cmd",
+      "entry": "beepoptvc-local/start-beepoptvc.cmd",
+      "bytes": 410,
+      "sha256": "aa05590a5652ec6df615b161da339690c62a6039feaf6bc6ad4951d60001c0e5"
+    },
+    {
+      "path": "companion-v5/diagnose-beepoptvc.cmd",
+      "entry": "beepoptvc-local/diagnose-beepoptvc.cmd",
+      "bytes": 244,
+      "sha256": "f38845ce0377dd3ca7087b1a90c2a7463b250a1417bdac7b51174a085e6e2989"
+    },
+    {
+      "path": "companion-v5/运行环境检查.command",
+      "entry": "beepoptvc-local/运行环境检查.command",
+      "bytes": 225,
+      "sha256": "8fd5f84595294e92fa07682f7a922fa0c90bd1152514b6343b4ba7af9813c693"
+    },
+    {
+      "path": "companion-v5/.npmrc",
+      "entry": "beepoptvc-local/.npmrc",
+      "bytes": 43,
+      "sha256": "f8bc9c2f10eb1dc6649682601a9677287cabd393687102b372fecc4cc330ec14"
+    },
+    {
+      "path": "companion-v5/startup.html",
+      "entry": "beepoptvc-local/startup.html",
+      "bytes": 1748,
+      "sha256": "9d5f7a9e545a69bb3d5a67ff5bbd0a7d1285e2166a2d4ca4827085fe7464b88e"
+    },
+    {
+      "path": "companion-v5/startup.js",
+      "entry": "beepoptvc-local/startup.js",
+      "bytes": 1529,
+      "sha256": "e381e60f9920ae31456ba432f2c1bedf1071679ef6eb8ce5b7861d50276a3a17"
+    },
+    {
+      "path": "companion-v5/service-control.cjs",
+      "entry": "beepoptvc-local/service-control.cjs",
+      "bytes": 342,
+      "sha256": "c6a824285479487a512fdbbee141212f307d2421e20b2090d5dfcad82eb9f135"
+    },
+    {
+      "path": "companion-v5/windows-service.cjs",
+      "entry": "beepoptvc-local/windows-service.cjs",
+      "bytes": 3417,
+      "sha256": "42df4db0fb6072cb3b33518ad7e5b1acfe941de6196d716666c61a806d533008"
+    },
+    {
+      "path": "companion-v5/双击启动.cmd",
+      "entry": "beepoptvc-local/双击启动.cmd",
+      "bytes": 410,
+      "sha256": "aa05590a5652ec6df615b161da339690c62a6039feaf6bc6ad4951d60001c0e5"
+    },
+    {
+      "path": "companion-v5/停止助手.cmd",
+      "entry": "beepoptvc-local/停止助手.cmd",
+      "bytes": 409,
+      "sha256": "8c1444039a9ba028df728234080c43c41bec448028845555a1b684efaf7312ef"
+    },
+    {
+      "path": "companion-v5/test/startup.test.cjs",
+      "entry": "beepoptvc-local/test/startup.test.cjs",
+      "bytes": 3524,
+      "sha256": "dcfd977356b8527edd616dd09d58a0470b78b8015b237c150b63c196c06ce379"
+    }
+  ]
+}
