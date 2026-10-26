@@ -1,0 +1,69 @@
+name: Windows native assistant
+on:
+  push:
+    paths:
+      - 'windows-app/**'
+      - '.github/workflows/windows-app.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-native-assistant
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble audited helper
+        run: node ci/assemble-companion.cjs .
+      - name: Build native WinForms EXE with embedded official runtime
+        shell: pwsh
+        run: ./windows-app/build.ps1
+      - name: Native application self-test, actual backend startup and window previews
+        shell: pwsh
+        run: |
+          $result = Join-Path $env:RUNNER_TEMP 'beepoptvc App 中文 test'
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'native-dist/beepoptvc-Assistant.exe'
+          $process = Start-Process -FilePath $exe -ArgumentList @('--self-test',('"'+$result+'"')) -Wait -PassThru
+          if (Test-Path (Join-Path $result 'self-test.log')) { Get-Content -Encoding UTF8 (Join-Path $result 'self-test.log') }
+          if (Test-Path (Join-Path $result 'app-self-test-error.txt')) { Get-Content -Encoding UTF8 (Join-Path $result 'app-self-test-error.txt') }
+          if ($process.ExitCode -ne 0) { throw ('Native app self-test exit '+$process.ExitCode) }
+          Copy-Item (Join-Path $result 'app-self-test.json') native-dist/
+          Copy-Item (Join-Path $result 'windows-app-*.png') native-dist/
+          Get-Content -Encoding UTF8 native-dist/app-self-test.json
+      - name: Save native app and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-native-assistant
+          path: |
+            native-dist/
+            ${{ runner.temp }}/beepoptvc App 中文 test/app-self-test-error.txt
+            ${{ runner.temp }}/beepoptvc App 中文 test/self-test.log
+            ${{ runner.temp }}/beepoptvc App 中文 test/assistant-app.log
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-native-assistant
+          path: native-output
+      - name: Publish tested application as a prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          manifest=$(find native-output -name native-windows-app.json -print -quit)
+          dir=$(dirname "$manifest")
+          tag=$(node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));process.stdout.write(m.releaseTag)' "$manifest")
+          gh release create "$tag" --target "$GITHUB_SHA" --prerelease --title "beepoptvc Windows 助手 App 0.5 预览版" --notes-file windows-app/RELEASE.md
+          gh release upload "$tag" "$dir/beepoptvc-Assistant.exe" "$dir/native-windows-app.json" "$dir/SHA256SUMS.txt" "$dir/使用说明.txt" "$dir/windows-app-source.zip" "$dir/app-self-test.json" "$dir/windows-app-ready.png" "$dir/windows-app-error.png"
