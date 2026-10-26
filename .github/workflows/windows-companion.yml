@@ -22,12 +22,12 @@ jobs:
         run: node ci/assemble-companion.cjs .
       - name: Extract
         shell: pwsh
-        run: Expand-Archive -LiteralPath companion-verified.zip -DestinationPath smoke
+        run: Expand-Archive -LiteralPath companion-verified.zip -DestinationPath 'smoke/Windows 中文 test'
       - name: Install exact dependencies
-        working-directory: smoke/beepoptvc-local
+        working-directory: smoke/Windows 中文 test/beepoptvc-local
         run: npx --yes pnpm@11.25.0 install --frozen-lockfile --ignore-scripts --fetch-timeout=600000
       - name: Prepare pinned neural voice and render browser
-        working-directory: smoke/beepoptvc-local
+        working-directory: smoke/Windows 中文 test/beepoptvc-local
         shell: pwsh
         run: |
           node setup-voice.cjs
@@ -37,22 +37,22 @@ jobs:
       - name: Startup readiness, local authorization and background lifetime
         shell: pwsh
         run: |
-          node smoke/beepoptvc-local/test/startup.test.cjs
+          node "smoke/Windows 中文 test/beepoptvc-local/test/startup.test.cjs"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          node smoke/beepoptvc-local/test/server.test.cjs
+          node "smoke/Windows 中文 test/beepoptvc-local/test/server.test.cjs"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          node ci/startup-smoke.cjs smoke/beepoptvc-local
+          node ci/startup-smoke.cjs "smoke/Windows 中文 test/beepoptvc-local"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Native Codex handshake, actual neural speech and 15-second render
-        run: node ci/companion-smoke.cjs smoke/beepoptvc-local
+        run: node ci/companion-smoke.cjs "smoke/Windows 中文 test/beepoptvc-local"
       - name: Save verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: windows-companion-evidence
           path: |
-            smoke/beepoptvc-local/data/startup-summary.json
-            smoke/beepoptvc-local/data/ci-summary.json
-            smoke/beepoptvc-local/data/neural-voice-sample.wav
-            smoke/beepoptvc-local/data/ci-fixture/out/product.mp4
-            smoke/beepoptvc-local/data/ci-fixture/voice-production.json
+            smoke/Windows 中文 test/beepoptvc-local/data/startup-summary.json
+            smoke/Windows 中文 test/beepoptvc-local/data/ci-summary.json
+            smoke/Windows 中文 test/beepoptvc-local/data/neural-voice-sample.wav
+            smoke/Windows 中文 test/beepoptvc-local/data/ci-fixture/out/product.mp4
+            smoke/Windows 中文 test/beepoptvc-local/data/ci-fixture/voice-production.json
