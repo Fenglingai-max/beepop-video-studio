@@ -1,0 +1,84 @@
+name: Windows complete assistant
+on:
+  push:
+    paths:
+      - 'windows-complete/**'
+      - '.github/workflows/windows-complete.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-complete-assistant
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble audited helper
+        run: node ci/assemble-companion.cjs .
+      - name: Build complete offline environment
+        run: node windows-complete/build-environment.cjs
+      - name: Build native WinForms EXE with embedded official runtime
+        shell: pwsh
+        run: ./windows-complete/build.ps1
+      - name: Native application self-test, actual backend startup and window previews
+        shell: pwsh
+        run: |
+          $result = Join-Path $env:RUNNER_TEMP 'beepoptvc App 中文 test'
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'complete-dist/beepoptvc-Assistant.exe'
+          $process = Start-Process -FilePath $exe -ArgumentList @('--self-test',('"'+$result+'"')) -Wait -PassThru
+          if (Test-Path (Join-Path $result 'self-test.log')) { Get-Content -Encoding UTF8 (Join-Path $result 'self-test.log') }
+          if (Test-Path (Join-Path $result 'app-self-test-error.txt')) { Get-Content -Encoding UTF8 (Join-Path $result 'app-self-test-error.txt') }
+          if ($process.ExitCode -ne 0) { throw ('Native app self-test exit '+$process.ExitCode) }
+          Copy-Item (Join-Path $result 'app-self-test.json') complete-dist/
+          Copy-Item (Join-Path $result 'windows-app-*.png') complete-dist/
+          Get-Content -Encoding UTF8 complete-dist/app-self-test.json
+      - name: Actual offline neural speech and 15-second Remotion render
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'beepoptvc App 中文 test'
+          $guard = Join-Path $root 'offline-guard.cjs'
+          $env:NODE_OPTIONS = '--require "' + $guard + '"'
+          $engine = Join-Path $root 'assistant'
+          & (Join-Path $engine 'data/runtime/node-v24.19.0-win-x64/node.exe') ci/companion-smoke.cjs $engine
+          if ($LASTEXITCODE -ne 0) { throw 'Offline neural speech and render failed' }
+          if (Test-Path ($guard+'.blocked.log')) { throw 'Offline preparation attempted external requests' }
+          Copy-Item (Join-Path $engine 'data/ci-summary.json') complete-dist/
+          Copy-Item (Join-Path $engine 'data/neural-voice-sample.wav') complete-dist/
+          Copy-Item (Join-Path $engine 'data/ci-fixture/out/product.mp4') complete-dist/
+      - name: Save native app and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-complete-assistant
+          path: |
+            complete-dist/
+            ${{ runner.temp }}/beepoptvc App 中文 test/app-self-test-error.txt
+            ${{ runner.temp }}/beepoptvc App 中文 test/self-test.log
+            ${{ runner.temp }}/beepoptvc App 中文 test/assistant-app.log
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-complete-assistant
+          path: complete-output
+      - name: Publish tested application as a prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          manifest=$(find complete-output -name windows-complete-app.json -print -quit)
+          dir=$(dirname "$manifest")
+          tag=$(node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));process.stdout.write(m.releaseTag)' "$manifest")
+          gh release create "$tag" --target "$GITHUB_SHA" --prerelease --title "beepoptvc Windows 助手 App 0.6 完整预览版" --notes-file windows-complete/RELEASE.md
+          gh release upload "$tag" "$dir/beepoptvc-Assistant.exe" "$dir/windows-complete-app.json" "$dir/SHA256SUMS.txt" "$dir/使用说明.txt" "$dir/windows-app-source.zip" "$dir/app-self-test.json" "$dir/windows-app-ready.png" "$dir/windows-app-error.png" "$dir/environment-files.json" "$dir/ci-summary.json" "$dir/neural-voice-sample.wav" "$dir/product.mp4"
