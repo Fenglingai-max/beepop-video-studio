@@ -111,6 +111,7 @@ namespace BeePopAssistant {
             Dictionary<string, object> meta = json.Deserialize<Dictionary<string, object>>(ResourceText("environment.json"));
             string expected = Text(meta, "sha256");
             if (!repair && File.Exists(stamp) && File.ReadAllText(stamp).Trim() == expected && File.Exists(Path.Combine(Engine, "node_modules", "kokoro-js", "package.json")) && File.Exists(Path.Combine(Engine, "data", "models", "kokoro-v1", "onnx", "model.onnx"))) return;
+            if (new DriveInfo(Path.GetPathRoot(Root)).AvailableFreeSpace < 6L * 1024 * 1024 * 1024) throw new IOException("安装盘可用空间不足，请预留至少 6 GB 后再点启动 / 修复。");
             Report("verify", "1/3 正在校验内置制作组件，无需联网下载…");
             await Task.Run(delegate {
                 using (Stream input = Resource("environment.zip")) if (Sha(input) != expected) throw new InvalidDataException("内置组件校验失败，请重新下载完整 App。");
@@ -311,7 +312,7 @@ namespace BeePopAssistant {
                         // All child Node requests are blocked from external network in this test.
                         string guard = Path.Combine(root, "offline-guard.cjs");
                         File.WriteAllText(guard, Core.ResourceText("offline-guard.cjs"), Encoding.UTF8);
-                        Environment.SetEnvironmentVariable("NODE_OPTIONS", "--require \"" + guard + "\"");
+                        Environment.SetEnvironmentVariable("NODE_OPTIONS", "--require \"" + guard.Replace('\\', '/') + "\"");
                         await core.StartAsync(); Snapshot state = null;
                         for (int i = 0; i < 300; i++) { state = await core.HealthAsync(); if (state.Failed) throw new Exception(state.Message); if (state.Ready) break; await Task.Delay(1000); }
                         Assert(state != null && state.Ready, "embedded helper reaches ready");

@@ -13,6 +13,9 @@ function run(cmd,args,cwd=root){const r=spawnSync(cmd,args,{cwd,stdio:'inherit',
  run(process.execPath,[npm,'exec','--yes','--package=pnpm@11.25.0','--','pnpm','install','--frozen-lockfile','--ignore-scripts','--node-linker=hoisted']);
  const spec=JSON.parse(await fs.readFile(path.join(root,'voice-model.json'),'utf8'));
  for(const x of spec.files)await download('https://huggingface.co/'+spec.repository+'/resolve/'+spec.revision+'/'+x.path,path.join(root,'data/models/kokoro-v1',x.path),x.sha256);
+ await download('https://huggingface.co/'+spec.repository+'/resolve/'+spec.revision+'/README.md',path.join(root,'node_modules/.beepoptvc-licenses/Kokoro-model-card.md'));
+ await fs.mkdir(path.join(root,'node_modules/.beepoptvc-licenses'),{recursive:true});
+ await fs.copyFile(path.join(root,'node_modules/kokoro-js/LICENSE'),path.join(root,'node_modules/.beepoptvc-licenses/Kokoro-Apache-2.0.txt'));
  const browserZip=path.resolve('complete-build/chrome.zip');
  const browser=await download('https://storage.googleapis.com/chrome-for-testing-public/149.0.7790.0/win64/chrome-headless-shell-win64.zip',browserZip);
  const browserRoot=path.join(root,'node_modules/.remotion/chrome-headless-shell/win64');

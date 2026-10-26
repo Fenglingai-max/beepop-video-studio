@@ -43,7 +43,7 @@ jobs:
         run: |
           $root = Join-Path $env:RUNNER_TEMP 'beepoptvc App 中文 test'
           $guard = Join-Path $root 'offline-guard.cjs'
-          $env:NODE_OPTIONS = '--require "' + $guard + '"'
+          $env:NODE_OPTIONS = '--require "' + $guard.Replace('\','/') + '"'
           $engine = Join-Path $root 'assistant'
           & (Join-Path $engine 'data/runtime/node-v24.19.0-win-x64/node.exe') ci/companion-smoke.cjs $engine
           if ($LASTEXITCODE -ne 0) { throw 'Offline neural speech and render failed' }
