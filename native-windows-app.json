@@ -1,14 +1,14 @@
 {
-  "version": "0.6.0-preview",
+  "version": "0.6.1-preview",
   "filename": "beepoptvc-Assistant.exe",
-  "bytes": 864068608,
-  "sha256": "ce3a7b69d5bb034ce9ae4adc77b5947b2bd87148426334e212553d08bf9a15e9",
+  "bytes": 864080896,
+  "sha256": "979501ecc05a9ae8d75219dd8e490f62aefc53a198ce7d1582faada216b0be9e",
   "payloadSha256": "4d4a4ecfacd5660fd0bff4242597935a6ef5398f94602fc81348e9b8f12d60a4",
   "embeddedNodeSha256": "57f71ab3652e797d84acddc79c81cc9ff1c6ddb2a1974cdb83f00fee9bff4c73",
-  "environmentSha256": "8cc86a40c616fb748e9ee86bab5d02a16eac044180c77977405211edc7a47821",
+  "environmentSha256": "93bcd337af4870ad107b7e449ff551bf273e3f3cc26c68214911c07b1ff2e9a6",
   "fullyBundled": true,
-  "sourceCommit": "80a60b25133ddb28542f10173c42077ac01c120e",
-  "releaseTag": "windows-complete-80a60b25133d",
+  "sourceCommit": "c2af3d6a232a205fd16be99e89378d978d380b38",
+  "releaseTag": "windows-complete-c2af3d6a232a",
   "signed": false,
-  "url": "https://github.com/Fenglingai-max/beepop-video-studio/releases/download/windows-complete-80a60b25133d/beepoptvc-Assistant.exe"
+  "url": "https://github.com/Fenglingai-max/beepop-video-studio/releases/download/windows-complete-c2af3d6a232a/beepoptvc-Assistant.exe"
 }
