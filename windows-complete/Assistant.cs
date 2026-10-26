@@ -27,8 +27,8 @@ namespace BeePopAssistant {
         public string Stage = "stopped", Message = "点击启动助手，准备好后即可打开官网。", Version = "";
     }
 
-    internal sealed class EnvironmentFile { public string path; public long bytes; }
-    internal sealed class EnvironmentFiles { public List<EnvironmentFile> files; }
+    internal sealed class EnvironmentFile { public EnvironmentFile() {} public string path; public long bytes; }
+    internal sealed class EnvironmentFiles { public EnvironmentFiles() {} public List<EnvironmentFile> files; }
     internal sealed class Core : IDisposable {
         public const string AppVersion = "0.6.0 完整版";
         public const string Site = "https://fenglingai-max.github.io/beepop-video-studio/?source=windows-app#create";
