@@ -1,8 +1,8 @@
 {
   "version": "0.4.1",
   "filename": "beepoptvc-local-windows.zip",
-  "bytes": 2602745,
-  "sha256": "67fbce4f9114a3d9ceb8506664923494554718afb6ff343c4b1187e1ecf307e3",
+  "bytes": 2603937,
+  "sha256": "4d4a4ecfacd5660fd0bff4242597935a6ef5398f94602fc81348e9b8f12d60a4",
   "base": {
     "version": "0.2.0",
     "filename": "beepoptvc-local-macos.zip",
@@ -206,6 +206,12 @@
       "entry": "beepoptvc-local/prepare-runtime.cmd",
       "bytes": 2051,
       "sha256": "aa63164bd2fd64ea568411ef224b3f661d61c188745870114172612d9cad2f2d"
+    },
+    {
+      "path": "companion-v5/START-WINDOWS.cmd",
+      "entry": "beepoptvc-local/START-WINDOWS.cmd",
+      "bytes": 1050,
+      "sha256": "a337a3de47984b59f553120b2e2ba1f9bc0be4cb7128b936aabd29bd66aa1195"
     }
   ]
 }
