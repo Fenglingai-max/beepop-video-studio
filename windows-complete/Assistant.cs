@@ -27,6 +27,8 @@ namespace BeePopAssistant {
         public string Stage = "stopped", Message = "点击启动助手，准备好后即可打开官网。", Version = "";
     }
 
+    internal sealed class EnvironmentFile { public string path; public long bytes; }
+    internal sealed class EnvironmentFiles { public List<EnvironmentFile> files; }
     internal sealed class Core : IDisposable {
         public const string AppVersion = "0.6.0 完整版";
         public const string Site = "https://fenglingai-max.github.io/beepop-video-studio/?source=windows-app#create";
@@ -110,7 +112,20 @@ namespace BeePopAssistant {
             string stamp = Path.Combine(Engine, "data", "environment.sha256");
             Dictionary<string, object> meta = json.Deserialize<Dictionary<string, object>>(ResourceText("environment.json"));
             string expected = Text(meta, "sha256");
-            if (!repair && File.Exists(stamp) && File.ReadAllText(stamp).Trim() == expected && File.Exists(Path.Combine(Engine, "node_modules", "kokoro-js", "package.json")) && File.Exists(Path.Combine(Engine, "data", "models", "kokoro-v1", "onnx", "model.onnx"))) return;
+            if (!repair && File.Exists(stamp) && File.ReadAllText(stamp).Trim() == expected) {
+                Report("verify", "正在检查已安装组件，缺失的组件将从包内修复…");
+                bool intact = await Task.Run(delegate {
+                    JavaScriptSerializer reader = new JavaScriptSerializer { MaxJsonLength = 32 * 1024 * 1024 };
+                    EnvironmentFiles manifest = reader.Deserialize<EnvironmentFiles>(ResourceText("environment-files.json"));
+                    foreach (EnvironmentFile file in manifest.files) {
+                        string dest = Path.GetFullPath(Path.Combine(Engine, file.path.Replace('/', Path.DirectorySeparatorChar)));
+                        if (!dest.StartsWith(Engine + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("组件清单路径异常。");
+                        FileInfo info = new FileInfo(dest); if (!info.Exists || info.Length != file.bytes) return false;
+                    }
+                    return true;
+                });
+                if (intact) return;
+            }
             if (new DriveInfo(Path.GetPathRoot(Root)).AvailableFreeSpace < 6L * 1024 * 1024 * 1024) throw new IOException("安装盘可用空间不足，请预留至少 6 GB 后再点启动 / 修复。");
             Report("verify", "1/3 正在校验内置制作组件，无需联网下载…");
             await Task.Run(delegate {
@@ -327,6 +342,7 @@ namespace BeePopAssistant {
                     core.StopAsync().GetAwaiter().GetResult(); core.WaitStoppedAsync().GetAwaiter().GetResult(); Assert(!core.HealthAsync().GetAwaiter().GetResult().Online, "authenticated background stop");
                     // Reproduce the user's missing-model failure and repair solely from the embedded package.
                     File.Delete(Path.Combine(core.Engine, "data", "models", "kokoro-v1", "onnx", "model.onnx"));
+                    File.Delete(Path.Combine(core.Engine, "node_modules", ".remotion", "chrome-headless-shell", "win64", "chrome-headless-shell-win64", "chrome-headless-shell.exe"));
                     Task.Run(async delegate {
                         await core.StartAsync(); Snapshot state = null;
                         for (int i = 0; i < 300; i++) { state = await core.HealthAsync(); if (state.Failed) throw new Exception(state.Message); if (state.Ready) break; await Task.Delay(1000); }
