@@ -1,0 +1,40 @@
+(function(){'use strict';
+const q=s=>document.querySelector(s),LOCAL='http://127.0.0.1:47831',KEY='beepoptvc-direct-v6',JOB='beepoptvc-active-v6';let connection=null,pending=null,verified=false,active=null,resultURL=null;
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s?.expiresAt>Date.now()&&/^[a-f0-9]{64}$/.test(s.token)&&/^[a-f0-9-]{36}$/.test(s.id))connection=s;const id=localStorage.getItem(JOB);if(/^[a-f0-9-]{36}$/.test(id||''))active=id;}catch{}
+const dialog=document.createElement('dialog');dialog.id='directJobDialog';dialog.className='task-dialog';dialog.innerHTML='<button class="close" id="closeDirectJob" aria-label="关闭">×</button><div class="eyebrow">YOUR PRODUCT VIDEO</div><h2 id="directTitle">正在生成视频</h2><p id="directMessage">正在连接本机 Codex…</p><progress id="directProgress" max="100" value="0" style="width:100%"></progress><div class="task-actions"><button class="outline" id="openDirectWindow">打开制作窗口 ↗</button></div><section id="directResult" hidden><video id="directVideo" controls playsinline style="width:100%;border-radius:12px;background:#151a11"></video><a id="directDownload" class="primary" download="商品视频.mp4">下载完整视频 ↓</a></section>';document.body.append(dialog);
+function paint(){q('#generate').innerHTML=active?'查看制作进度 <span>↗</span>':'生成视频 <span>↗</span>';q('#connectCodex').textContent=verified?'我的 Codex ✓':'连接我的 Codex';q('#codexStatus').textContent=verified?'Codex 已验证 · 本机助手执行':connection?'Codex 连接已保存 · 点击生成时验证':'连接自己的 Codex · LibTV 登录页面制作';q('#disconnectCodex').hidden=!connection;}
+window.updateDirectMode=paint;
+function nonce(){return Array.from(crypto.getRandomValues(new Uint8Array(24)),n=>n.toString(16).padStart(2,'0')).join('');}
+function openDirect(data={}){
+ const state=nonce(),popup=window.open(LOCAL+'/direct?origin='+encodeURIComponent(location.origin)+'&state='+state,'beepoptvc-direct','width=960,height=840');
+ if(!popup){error('请允许本机制作窗口弹出后重试。');return null;}
+ pending={state,popup,data:Promise.resolve(data),created:Date.now(),ready:false};const current=pending;
+ setTimeout(()=>{if(pending===current&&!current.ready){q('#codexMessage').textContent='请先打开资源包中的“启动beepoptvc”，看到助手已就绪后重试连接。';if(!q('#codexDialog').open)q('#codexDialog').showModal();q('#directMessage').textContent='等待本机助手启动。';}},15000);return current;
+}
+function b64(buffer){const bytes=new Uint8Array(buffer);let text='';for(let i=0;i<bytes.length;i+=32768)text+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(text);}
+async function snapshot(id,s,description,files,context){const assets=[];for(const x of files)assets.push({name:x.file.name,type:x.file.type,role:x.role,data:b64(await x.file.arrayBuffer())});return {job:{...s,duration:Number(s.duration),id,description,caseContext:context,images:assets,consent:true}};}
+q('#generate').onclick=()=>{
+ if(active){dialog.showModal();openDirect({resume:active});return;}
+ try{
+  const s=settings(),description=q('#description').value,files=images.map(x=>({file:x.file,role:x.label||'商品图片'}));
+  TVCStudio.build({...s,description,assets:files.map(x=>({path:x.file.name,role:x.role}))});
+  if(files.some(x=>!['image/png','image/jpeg','image/webp'].includes(x.file.type)||x.file.size>20*1024*1024)||files.reduce((n,x)=>n+x.file.size,0)>50*1024*1024)throw Error('图片合计需小于50 MB，单张小于20 MB。');
+  const id=crypto.randomUUID(),current=openDirect();if(!current)return;current.data=snapshot(id,s,description,files,window.currentCaseContext?.()).catch(e=>({failure:e.message}));error('');q('#directTitle').textContent='正在生成视频';q('#directMessage').textContent='正在把商品资料交给本机 Codex。';q('#directResult').hidden=true;q('#directProgress').value=0;dialog.showModal();
+ }catch(e){error(e.message);}
+};
+window.addEventListener('message',async e=>{
+ const d=e.data;if(e.origin!==LOCAL||!pending||e.source!==pending.popup||d?.state!==pending.state||Date.now()-pending.created>10*60000&&d?.type==='beepop-direct-ready')return;
+ if(d.type==='beepop-direct-ready'){const current=pending;current.ready=true;try{const data=await current.data;if(pending!==current)return;if(data.failure)throw Error(data.failure);current.popup.postMessage({type:'beepop-direct-request',state:current.state,connection,...data},LOCAL);}catch(e){q('#directMessage').textContent=e.message;}return;}
+ if(d.type==='beepop-direct-connected'){if(!d.connection||!/^[a-f0-9]{64}$/.test(d.connection.token||'')||!/^[a-f0-9-]{36}$/.test(d.connection.id||'')||d.connection.expiresAt<=Date.now())return;connection=d.connection;localStorage.setItem(KEY,JSON.stringify(connection));verified=true;q('#codexMessage').textContent='Codex 已连接，可以直接生成视频。';q('#codexDialog').close();paint();}
+ if(d.type==='beepop-direct-verified'){verified=true;paint();}
+ if(d.type==='beepop-direct-disconnected'){connection=null;verified=false;localStorage.removeItem(KEY);q('#codexMessage').textContent='已断开当前网页连接。';paint();}
+ if(d.type==='beepop-direct-started'&&/^[a-f0-9-]{36}$/.test(d.id||'')){active=d.id;localStorage.setItem(JOB,active);paint();}
+ if(d.type==='beepop-direct-progress'){if(d.job?.id!==active)return;q('#directProgress').value=d.job.percent;q('#directMessage').textContent=d.job.message;q('#directTitle').textContent=d.job.pending?'请在制作窗口确认':'正在生成视频';}
+ if(d.type==='beepop-direct-result'){if(d.id!==active||!(d.blob instanceof Blob)||!d.blob.type.startsWith('video/')||d.blob.size<1000)return;if(resultURL)URL.revokeObjectURL(resultURL);resultURL=URL.createObjectURL(d.blob);q('#directVideo').src=resultURL;q('#directDownload').href=resultURL;q('#directResult').hidden=false;q('#directProgress').value=100;q('#directTitle').textContent='视频已完成';q('#directMessage').textContent='可以直接预览和下载完整成片。';active=null;localStorage.removeItem(JOB);paint();}
+ if(d.type==='beepop-direct-error'){q('#directTitle').textContent='制作尚未完成';q('#directMessage').textContent=d.message||'请查看制作窗口。';active=null;localStorage.removeItem(JOB);paint();}
+});
+q('#closeDirectJob').onclick=()=>dialog.close();q('#openDirectWindow').onclick=()=>{if(pending?.popup&&!pending.popup.closed)pending.popup.focus();else if(active)openDirect({resume:active});else openDirect();};
+q('#connectCodex').onclick=()=>openDirect();q('#openLocalAuth').onclick=()=>openDirect();q('#closeCodex').onclick=()=>q('#codexDialog').close();q('#disconnectCodex').onclick=()=>openDirect({disconnect:true});
+q('#downloadCompanion').onclick=async()=>{const button=q('#downloadCompanion');button.disabled=true;try{q('#codexMessage').textContent='正在准备完整资源包…';const r=await fetch('companion-v6-resources.json?v=20261113-direct1');if(!r.ok)throw Error('资源包清单暂不可用。');const m=await r.json();if(m.version!=='0.6.0'||!Array.isArray(m.parts)||m.parts.length>100||m.parts.some(p=>!/^companion-v6-resource-\d{2}\.bin$/.test(p))||!/^[a-f0-9]{64}$/.test(m.sha256||''))throw Error('资源包清单无效。');const bytes=[];for(let i=0;i<m.parts.length;i++){const r=await fetch(m.parts[i]);if(!r.ok)throw Error('资源包下载中断。');bytes.push(await r.arrayBuffer());button.textContent='准备资源包 '+Math.round((i+1)/m.parts.length*100)+'%';}const blob=new Blob(bytes,{type:'application/zip'});const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer())),n=>n.toString(16).padStart(2,'0')).join('');if(blob.size!==m.bytes||hash!==m.sha256)throw Error('资源包校验失败，请重试。');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='beepoptvc-三版自动制作资源包.zip';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);q('#codexMessage').textContent='完整解压资源包，双击与你的系统对应的启动文件；首次会自动准备运行组件。';}catch(e){q('#codexMessage').textContent=e.message;}finally{button.disabled=false;button.textContent='下载完整资源包 ↓';}};
+paint();
+})();

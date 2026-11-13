@@ -11,8 +11,8 @@ function render(){
  q('#selectionSummary').textContent=s.duration+' 秒 · '+s.ratio;
  q('#ratioIcon').classList.toggle('vertical',s.ratio==='9:16');
  q('#settingHelp').textContent=remotion?'本版用图片与场景素材编排纯 Remotion，不调用视频模型。声线为风格偏好，制作时匹配并试听。':'通过已登录 LibTV 页面使用所选模型；分辨率为请求值，制作前核对界面支持。声线为风格偏好。';
- q('.prototype-note').textContent='当前通过制作任务包交给 Codex 执行，正式 API 尚未接入。点击准备任务不会提交生成或消耗额度。';
- q('#generate').innerHTML='准备制作任务 <span>↗</span>';
+ q('.prototype-note').textContent='点击生成后，由本机 Codex 按所选版本制作，完成后直接预览和下载。';
+ q('#generate').innerHTML='生成视频 <span>↗</span>';window.updateDirectMode?.();
 
 }
 window.updateGenerationMode=render;

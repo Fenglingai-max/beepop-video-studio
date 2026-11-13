@@ -20,7 +20,7 @@ test('Seedance 480p survives drafts and task export without applying to MiniMax'
 
 test('featured showcase uses a third-edition case with no duplicate gallery card',()=>{const s=fs.readFileSync(__dirname+'/index.html','utf8');assert.match(s,/id="sampleVideo"[^>]*poster="case-v3-04.jpg"/);assert.doesNotMatch(s,/id="video-v3-04"/);assert.match(s,/id="caseGallery"/);assert.equal((s.match(/data-case-version=/g)||[]).length,3);});
 
-test('Codex verification entry is restored without old generation bridge',()=>{const s=fs.readFileSync(__dirname+'/index.html','utf8');assert.match(s,/id="connectCodex"/);assert.match(s,/id="codexDialog"/);assert.match(s,/src="codex-auth.js/);assert.doesNotMatch(s,/<script src="codex-bridge/);});
+test('Codex verification entry is restored without old generation bridge',()=>{const s=fs.readFileSync(__dirname+'/index.html','utf8');assert.match(s,/id="connectCodex"/);assert.match(s,/id="codexDialog"/);assert.match(s,/src="direct-bridge.js/);assert.doesNotMatch(s,/<script src="codex-bridge/);});
 
 test('duration slider starts hidden in an anchored popover',()=>{const s=fs.readFileSync(__dirname+'/index.html','utf8');assert.match(s,/id="durationPopover" hidden/);assert.match(s,/aria-controls="durationPopover" aria-expanded="false"/);});
 
@@ -32,3 +32,5 @@ test('remix restores original chat brief, requirements and case settings for eve
 test('three-step workflow uses baking product and 30-second pure-video story',()=>{const html=fs.readFileSync(__dirname+'/index.html','utf8'),workflow=html.split('id="workflow"')[1].split('</section>')[0];assert.match(workflow,/workflow-baking.webp/);assert.match(workflow,/23—30s/);assert.match(workflow,/30 秒纯视频/);assert.doesNotMatch(workflow,/17—20s|poster.jpg/);});
 
 test('case requirements travel in task context without adding process text to product input',()=>{const j=C.build({...input,caseContext:{requirements:'保留四种颜色'}});assert.match(C.prompt(j),/保留四种颜色/);assert.equal(j.description,input.description);assert.equal(j.caseContext.requirements,'保留四种颜色');});
+
+test('generation opens the native connected runner without requiring task or plugin downloads',()=>{const s=fs.readFileSync(__dirname+'/direct-bridge.js','utf8');assert.match(s,/beepop-direct-request/);assert.match(s,/consent:true/);assert.match(s,/crypto.randomUUID/);assert.doesNotMatch(s,/api\/bridge\/jobs|model:'tvc-2-local'/);const h=fs.readFileSync(__dirname+'/index.html','utf8');assert.doesNotMatch(h,/下载任务包|先安装对应测试版插件|下载 Windows 完整版/);assert.match(h,/下载完整资源包/);});
