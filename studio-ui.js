@@ -5,28 +5,25 @@ let job=null,exporting=false;
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
 function render(){
  const s=settings(),v=C.versions[s.version];
- document.querySelectorAll('[data-version]').forEach(b=>{const on=b.dataset.version===s.version;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});
+ const requested=q('#resolution').value,model=C.models[s.model];q('#resolution').replaceChildren(...model.resolutions.map(n=>new Option(n,n)));q('#resolution').value=model.resolutions.includes(requested)?requested:model.resolution;
  const remotion=v.mode==='remotion';q('#model').disabled=remotion;q('#resolution').disabled=remotion;
- q('#versionIntro').textContent=v.summary;q('#detailTitle').textContent=v.name;
- q('#materialRequirements').textContent=v.materials;q('#evidenceRequirements').textContent=v.evidence;q('#deliveryRequirements').textContent=v.delivery;
  q('.model-pill').textContent=remotion?'纯 Remotion · 无视频模型':C.models[s.model].label+' · LibTV';
- q('#selectionSummary').textContent=v.name+' · '+s.duration+' 秒 · '+s.ratio;
+ q('#selectionSummary').textContent=s.duration+' 秒 · '+s.ratio;
  q('#ratioIcon').classList.toggle('vertical',s.ratio==='9:16');
  q('#settingHelp').textContent=remotion?'本版用图片与场景素材编排纯 Remotion，不调用视频模型。声线为风格偏好，制作时匹配并试听。':'通过已登录 LibTV 页面使用所选模型；分辨率为请求值，制作前核对界面支持。声线为风格偏好。';
  q('.prototype-note').textContent='当前通过制作任务包交给 Codex 执行，正式 API 尚未接入。点击准备任务不会提交生成或消耗额度。';
  q('#generate').innerHTML='准备制作任务 <span>↗</span>';
- const steps=document.querySelectorAll('#workflow .steps article');
- const details=[v.materials,v.summary,v.delivery];
- const titles=['核对素材与商品事实',v.mode==='remotion'?'按卖点编排动效':'登录 LibTV，完成真实镜头','审片、声音与交付'];
- steps.forEach((el,i)=>{el.querySelector('h3').textContent=titles[i];el.querySelector('p').textContent=details[i];});
- const art=q('.timeline-art');art.replaceChildren();for(const text of (remotion?['全貌 → 连续细节','双场景 → 卖点','旁白字幕 → 收尾']:v.mode==='hybrid'?['10秒真实多镜','15–20秒原生Remotion','声画统一与审查']:['需求 → 使用 → 结果','全时段真实视频','至少五个独立分镜'])){const div=document.createElement('div');div.textContent=text;art.append(div);}
- q('#workflow .export-art small').textContent=v.mode==='video'?'MP4 · 字幕 · 来源与审片':'MP4 · 字幕 · HTM / 工程';
+
 }
 window.updateGenerationMode=render;
 q('#model').addEventListener('change',()=>{q('#resolution').value=C.models[q('#model').value].resolution;render();});
-document.querySelectorAll('[data-version]').forEach(b=>b.addEventListener('click',()=>{const current=settings(),v=C.versions[b.dataset.version];restoreSettings({...current,version:b.dataset.version,duration:v.durations.includes(Number(current.duration))?current.duration:v.defaultDuration});}));
+q('#version').addEventListener('change',()=>{const current=settings(),v=C.versions[current.version];restoreSettings({...current,duration:Number(current.duration)>=15&&Number(current.duration)<=30?current.duration:v.defaultDuration});});
+function durationPopup(open){q('#durationPopover').hidden=!open;q('#duration').setAttribute('aria-expanded',String(open));}
+q('#duration').addEventListener('focus',()=>durationPopup(true));q('#duration').addEventListener('click',()=>durationPopup(true));document.addEventListener('pointerdown',e=>{if(!e.target.closest('.duration-field'))durationPopup(false);});document.addEventListener('keydown',e=>{if(e.key==='Escape')durationPopup(false);});
+q('#durationSlider').addEventListener('input',()=>{q('#duration').value=q('#durationSlider').value;render();});
+q('#duration').addEventListener('input',()=>{const n=Number(q('#duration').value);if(n>=15&&n<=30){q('#durationSlider').value=n;error('');render();}});
 q('#closeTask').onclick=()=>q('#taskDialog').close();
-q('#previewDemo').onclick=()=>{const v=C.versions[settings().version];q('#taskTitle').textContent=v.name+' · 制作流程';q('#taskSummary').textContent=v.steps.join(' → ');q('#taskPrompt').value=v.rule;q('#taskStatus').textContent='流程说明 · 尚未创建任务';job=null;q('#downloadTask').disabled=true;q('#copyTask').disabled=false;q('#taskDialog').showModal();};
+q('#previewDemo').onclick=()=>{const v=C.versions[settings().version];q('#taskTitle').textContent='制作流程';q('#taskSummary').textContent=v.steps.join(' → ');q('#taskPrompt').value=v.rule;q('#taskStatus').textContent='流程说明 · 尚未创建任务';job=null;q('#downloadTask').disabled=true;q('#copyTask').disabled=false;q('#taskDialog').showModal();};
 q('#generate').onclick=()=>{try{
  if(!images.length)throw Error('请上传商品图，或载入一个案例。');
  if(images.reduce((n,x)=>n+x.file.size,0)>50*1024*1024)throw Error('商品图片合计不能超过50 MB。');
@@ -34,7 +31,7 @@ q('#generate').onclick=()=>{try{
  job=C.build({...settings(),description:q('#description').value,sourceCaseId:window.currentCaseId?.(),assets});
  // Snapshot the exact files: edits after this dialog opens must not alter this task.
  job.files=images.map(x=>x.file);
- q('#taskTitle').textContent=job.versionName+' · 制作任务';
+ q('#taskTitle').textContent='制作任务';
  q('#taskSummary').textContent=job.settings.duration+'秒 / '+job.settings.ratio+' / '+(job.settings.model?C.models[job.settings.model].label+' · '+job.settings.resolution:'纯 Remotion')+' / '+assets.length+'张素材';
  q('#taskPrompt').value=C.prompt(job);q('#taskStatus').textContent='任务已准备 · 尚未提交 LibTV · 待制作与审片';q('#downloadTask').disabled=false;q('#copyTask').disabled=false;error('');q('#taskDialog').showModal();
  }catch(e){error(e.message);}
