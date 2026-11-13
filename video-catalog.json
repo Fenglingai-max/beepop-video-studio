@@ -7,7 +7,8 @@
     "duration": 15.02,
     "poster": "case-v1-01.jpg",
     "parts": [
-      "case-v1-01.mp4"
+      "case-v1-01-01.bin",
+      "case-v1-01-02.bin"
     ],
     "bytes": 1024929,
     "sha256": "2e076dd6f431e89c5136384d0a85f2c73152bc1f6b600ec2ced4f2c98dafb4f6",
@@ -22,7 +23,9 @@
     "duration": 15.0,
     "poster": "case-v1-02.jpg",
     "parts": [
-      "case-v1-02.mp4"
+      "case-v1-02-01.bin",
+      "case-v1-02-02.bin",
+      "case-v1-02-03.bin"
     ],
     "bytes": 1621231,
     "sha256": "ce36a806c3a12a02322fa8cd80d1b540c027118e4a47732fce87d733bf66b1d5",
@@ -37,7 +40,8 @@
     "duration": 15.02,
     "poster": "case-v1-03.jpg",
     "parts": [
-      "case-v1-03.mp4"
+      "case-v1-03-01.bin",
+      "case-v1-03-02.bin"
     ],
     "bytes": 1001131,
     "sha256": "b14bcbc5f0ab4632dcfa8679f59530d8e186a8a2085cdbcfe64578096e8eed41",
@@ -52,7 +56,8 @@
     "duration": 15.0,
     "poster": "case-v1-04.jpg",
     "parts": [
-      "case-v1-04.mp4"
+      "case-v1-04-01.bin",
+      "case-v1-04-02.bin"
     ],
     "bytes": 835464,
     "sha256": "a0da59a1f1993caf77e1836e434eb8668c178860a6843bdd2c54c14a25cc5380",
@@ -67,7 +72,9 @@
     "duration": 15.0,
     "poster": "case-v1-05.jpg",
     "parts": [
-      "case-v1-05.mp4"
+      "case-v1-05-01.bin",
+      "case-v1-05-02.bin",
+      "case-v1-05-03.bin"
     ],
     "bytes": 1589289,
     "sha256": "4b6acbf5fe3967c0272166ca70963ea85b4cb8e40ada86cec263c8f8a11383a2",
@@ -82,7 +89,8 @@
     "duration": 15.0,
     "poster": "case-v1-06.jpg",
     "parts": [
-      "case-v1-06.mp4"
+      "case-v1-06-01.bin",
+      "case-v1-06-02.bin"
     ],
     "bytes": 990976,
     "sha256": "61bb7a5331c79d3d42603c8bea16c26756c92d71c01dc40f86aeea2b02a4a4b4",
@@ -97,7 +105,8 @@
     "duration": 15.0,
     "poster": "case-v1-07.jpg",
     "parts": [
-      "case-v1-07.mp4"
+      "case-v1-07-01.bin",
+      "case-v1-07-02.bin"
     ],
     "bytes": 991067,
     "sha256": "517527954537a48a7cbebee2540cddc02342370b6d03593ed9b22a2739a4fd66",
@@ -112,7 +121,9 @@
     "duration": 15.0,
     "poster": "case-v1-08.jpg",
     "parts": [
-      "case-v1-08.mp4"
+      "case-v1-08-01.bin",
+      "case-v1-08-02.bin",
+      "case-v1-08-03.bin"
     ],
     "bytes": 1399667,
     "sha256": "0611774f2eea03d41f4d17bce748bcbe33f1b16afec534d5a24ea77814c63b36",
@@ -127,7 +138,10 @@
     "duration": 15.0,
     "poster": "case-v1-09.jpg",
     "parts": [
-      "case-v1-09.mp4"
+      "case-v1-09-01.bin",
+      "case-v1-09-02.bin",
+      "case-v1-09-03.bin",
+      "case-v1-09-04.bin"
     ],
     "bytes": 1809312,
     "sha256": "abdb87bda6ad59d479c58d570ea0e358554186e30d3cedc3711961c2ac654eb6",
@@ -142,7 +156,10 @@
     "duration": 15.0,
     "poster": "case-v1-10.jpg",
     "parts": [
-      "case-v1-10.mp4"
+      "case-v1-10-01.bin",
+      "case-v1-10-02.bin",
+      "case-v1-10-03.bin",
+      "case-v1-10-04.bin"
     ],
     "bytes": 1863185,
     "sha256": "4ea180a32c53a36707f9b217ebdde4158565df7e00d2177e3aa9018129592a72",
@@ -157,7 +174,12 @@
     "duration": 27.0,
     "poster": "case-v2-01.jpg",
     "parts": [
-      "case-v2-01.mp4"
+      "case-v2-01-01.bin",
+      "case-v2-01-02.bin",
+      "case-v2-01-03.bin",
+      "case-v2-01-04.bin",
+      "case-v2-01-05.bin",
+      "case-v2-01-06.bin"
     ],
     "bytes": 3437150,
     "sha256": "57536b27652f895d70f04b43fbb8956835a0284c891f45ce0b19719fb716de7b",
@@ -172,7 +194,10 @@
     "duration": 25.0,
     "poster": "case-v2-02.jpg",
     "parts": [
-      "case-v2-02.mp4"
+      "case-v2-02-01.bin",
+      "case-v2-02-02.bin",
+      "case-v2-02-03.bin",
+      "case-v2-02-04.bin"
     ],
     "bytes": 2182692,
     "sha256": "abbad1e79672de5d5e50867b9a4e9150dc1a9cc5d041cc2e54634a3bf5f5bd1d",
@@ -187,7 +212,12 @@
     "duration": 27.0,
     "poster": "case-v2-03.jpg",
     "parts": [
-      "case-v2-03.mp4"
+      "case-v2-03-01.bin",
+      "case-v2-03-02.bin",
+      "case-v2-03-03.bin",
+      "case-v2-03-04.bin",
+      "case-v2-03-05.bin",
+      "case-v2-03-06.bin"
     ],
     "bytes": 3101406,
     "sha256": "ffb3bb075c80e7a20112d8f14ccff798a489060b2ff65826129122bb435788f5",
@@ -202,7 +232,11 @@
     "duration": 28.0,
     "poster": "case-v2-04.jpg",
     "parts": [
-      "case-v2-04.mp4"
+      "case-v2-04-01.bin",
+      "case-v2-04-02.bin",
+      "case-v2-04-03.bin",
+      "case-v2-04-04.bin",
+      "case-v2-04-05.bin"
     ],
     "bytes": 2855023,
     "sha256": "e2eaaaf430052544127494a275bfb25041f38df63c17f613b29c0e38019ed94d",
@@ -217,7 +251,11 @@
     "duration": 27.0,
     "poster": "case-v2-05.jpg",
     "parts": [
-      "case-v2-05.mp4"
+      "case-v2-05-01.bin",
+      "case-v2-05-02.bin",
+      "case-v2-05-03.bin",
+      "case-v2-05-04.bin",
+      "case-v2-05-05.bin"
     ],
     "bytes": 2542376,
     "sha256": "8d631ceaf0f435f8fcca0433fe9716d0fa2f43e488c33bd60af6c3353dbe3cc4",
@@ -232,7 +270,14 @@
     "duration": 29.0,
     "poster": "case-v2-06.jpg",
     "parts": [
-      "case-v2-06.mp4"
+      "case-v2-06-01.bin",
+      "case-v2-06-02.bin",
+      "case-v2-06-03.bin",
+      "case-v2-06-04.bin",
+      "case-v2-06-05.bin",
+      "case-v2-06-06.bin",
+      "case-v2-06-07.bin",
+      "case-v2-06-08.bin"
     ],
     "bytes": 4590863,
     "sha256": "b06775122e40d758aa5abd8cc40d14e058ff5f3e932508bce44fb9f12a8a415a",
@@ -247,7 +292,12 @@
     "duration": 27.0,
     "poster": "case-v2-07.jpg",
     "parts": [
-      "case-v2-07.mp4"
+      "case-v2-07-01.bin",
+      "case-v2-07-02.bin",
+      "case-v2-07-03.bin",
+      "case-v2-07-04.bin",
+      "case-v2-07-05.bin",
+      "case-v2-07-06.bin"
     ],
     "bytes": 3573294,
     "sha256": "c8828f8a4615923d9f49987785b5ae181c7f21fbe6b09f0fa6c8d6bd7c79dcf4",
@@ -262,7 +312,11 @@
     "duration": 28.0,
     "poster": "case-v2-09.jpg",
     "parts": [
-      "case-v2-09.mp4"
+      "case-v2-09-01.bin",
+      "case-v2-09-02.bin",
+      "case-v2-09-03.bin",
+      "case-v2-09-04.bin",
+      "case-v2-09-05.bin"
     ],
     "bytes": 2719457,
     "sha256": "738741ce9836fb52e8ba8826735025039a6a5fd6bf490df6708138af41000242",
@@ -277,7 +331,11 @@
     "duration": 28.0,
     "poster": "case-v2-17.jpg",
     "parts": [
-      "case-v2-17.mp4"
+      "case-v2-17-01.bin",
+      "case-v2-17-02.bin",
+      "case-v2-17-03.bin",
+      "case-v2-17-04.bin",
+      "case-v2-17-05.bin"
     ],
     "bytes": 2474854,
     "sha256": "b33ed0ea392468b3f56791904c85c594658adf022847c2202954cfb3a63b3628",
@@ -292,7 +350,11 @@
     "duration": 29.0,
     "poster": "case-v2-18.jpg",
     "parts": [
-      "case-v2-18.mp4"
+      "case-v2-18-01.bin",
+      "case-v2-18-02.bin",
+      "case-v2-18-03.bin",
+      "case-v2-18-04.bin",
+      "case-v2-18-05.bin"
     ],
     "bytes": 2452862,
     "sha256": "ab9f3e5734343771f14fe3b84ab15ce926708e7eb0abb445370f802a43a1c29c",
@@ -307,7 +369,12 @@
     "duration": 22.5,
     "poster": "case-v3-01.jpg",
     "parts": [
-      "case-v3-01.mp4"
+      "case-v3-01-01.bin",
+      "case-v3-01-02.bin",
+      "case-v3-01-03.bin",
+      "case-v3-01-04.bin",
+      "case-v3-01-05.bin",
+      "case-v3-01-06.bin"
     ],
     "bytes": 3153251,
     "sha256": "104d4a9cc064601ac68734066193b72a312ea26af45e2c60e522c04ddec4721f",
@@ -322,7 +389,14 @@
     "duration": 25.0,
     "poster": "case-v3-02.jpg",
     "parts": [
-      "case-v3-02.mp4"
+      "case-v3-02-01.bin",
+      "case-v3-02-02.bin",
+      "case-v3-02-03.bin",
+      "case-v3-02-04.bin",
+      "case-v3-02-05.bin",
+      "case-v3-02-06.bin",
+      "case-v3-02-07.bin",
+      "case-v3-02-08.bin"
     ],
     "bytes": 4445153,
     "sha256": "48097ef158d923e982c1eeeaddaaf5d907b6b9a50e2b03a3dad5d7a9ff929395",
@@ -337,7 +411,10 @@
     "duration": 30.0,
     "poster": "case-v3-03.jpg",
     "parts": [
-      "case-v3-03.mp4"
+      "case-v3-03-01.bin",
+      "case-v3-03-02.bin",
+      "case-v3-03-03.bin",
+      "case-v3-03-04.bin"
     ],
     "bytes": 2162771,
     "sha256": "69a9635ee7038e7d218fe129c6646e927c02af8291b519d1d568970a32b1e40a",
@@ -352,7 +429,10 @@
     "duration": 25.0,
     "poster": "case-v3-04.jpg",
     "parts": [
-      "case-v3-04.mp4"
+      "case-v3-04-01.bin",
+      "case-v3-04-02.bin",
+      "case-v3-04-03.bin",
+      "case-v3-04-04.bin"
     ],
     "bytes": 1865179,
     "sha256": "4cad12a875b04059b95f42e3fb62493d2c5446f762a9e6331c9694d436c1a936",
@@ -367,7 +447,9 @@
     "duration": 25.0,
     "poster": "case-v3-05.jpg",
     "parts": [
-      "case-v3-05.mp4"
+      "case-v3-05-01.bin",
+      "case-v3-05-02.bin",
+      "case-v3-05-03.bin"
     ],
     "bytes": 1559349,
     "sha256": "b00ceda7789e7177d2bfa37670ca4aebe2c2bc49d34ef751af3ecc0837339cbf",
@@ -382,7 +464,10 @@
     "duration": 22.0,
     "poster": "case-v3-06.jpg",
     "parts": [
-      "case-v3-06.mp4"
+      "case-v3-06-01.bin",
+      "case-v3-06-02.bin",
+      "case-v3-06-03.bin",
+      "case-v3-06-04.bin"
     ],
     "bytes": 2100316,
     "sha256": "24875641bd1acfc966749b24f9fb6550e4ad110cbe6895cd45fb4c3e1170eeb2",
@@ -397,7 +482,9 @@
     "duration": 24.46,
     "poster": "case-v3-07.jpg",
     "parts": [
-      "case-v3-07.mp4"
+      "case-v3-07-01.bin",
+      "case-v3-07-02.bin",
+      "case-v3-07-03.bin"
     ],
     "bytes": 1594576,
     "sha256": "e8b4c85d92a5f4f87b5758afa99f6c17a91e872d5a0e2d014967f6cec96d2256",
@@ -412,7 +499,10 @@
     "duration": 22.0,
     "poster": "case-v3-08.jpg",
     "parts": [
-      "case-v3-08.mp4"
+      "case-v3-08-01.bin",
+      "case-v3-08-02.bin",
+      "case-v3-08-03.bin",
+      "case-v3-08-04.bin"
     ],
     "bytes": 2148539,
     "sha256": "c458e20f4fc3eb9d89183f7a6b720b7fbd32d971a3622533521b2d8fb6ec11cb",
@@ -427,7 +517,9 @@
     "duration": 20.0,
     "poster": "case-v3-09.jpg",
     "parts": [
-      "case-v3-09.mp4"
+      "case-v3-09-01.bin",
+      "case-v3-09-02.bin",
+      "case-v3-09-03.bin"
     ],
     "bytes": 1434014,
     "sha256": "994293fb151ef8257f30e8e2b4fa93be047426db48c3284221b07f8f80f49166",
@@ -442,7 +534,11 @@
     "duration": 22.88,
     "poster": "case-v3-10.jpg",
     "parts": [
-      "case-v3-10.mp4"
+      "case-v3-10-01.bin",
+      "case-v3-10-02.bin",
+      "case-v3-10-03.bin",
+      "case-v3-10-04.bin",
+      "case-v3-10-05.bin"
     ],
     "bytes": 2497349,
     "sha256": "837958b5271ae3a1932b03d3011575f208efe1009175dcc661917cfe1d5c3cf5",

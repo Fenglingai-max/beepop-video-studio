@@ -28,7 +28,7 @@ q('#generate').onclick=()=>{try{
  if(!images.length)throw Error('请上传商品图，或载入一个案例。');
  if(images.reduce((n,x)=>n+x.file.size,0)>50*1024*1024)throw Error('商品图片合计不能超过50 MB。');
  const assets=images.map((x,i)=>({path:'assets/'+String(i+1).padStart(2,'0')+'-'+x.file.name.replace(/[^\p{L}\p{N}._-]/gu,'_'),name:x.file.name,bytes:x.file.size,type:x.file.type,role:x.label||'商品图片',review:'pending'}));
- job=C.build({...settings(),description:q('#description').value,sourceCaseId:window.currentCaseId?.(),assets});
+ job=C.build({...settings(),description:q('#description').value,sourceCaseId:window.currentCaseId?.(),caseContext:window.currentCaseContext?.(),assets});
  // Snapshot the exact files: edits after this dialog opens must not alter this task.
  job.files=images.map(x=>x.file);
  q('#taskTitle').textContent='制作任务';
