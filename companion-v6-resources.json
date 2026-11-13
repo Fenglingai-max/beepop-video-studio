@@ -33,8 +33,8 @@
     "companion-v6-resource-30.bin",
     "companion-v6-resource-31.bin"
   ],
-  "bytes": 18129896,
-  "sha256": "593ddad52407c92c2bf0cbdb76c3c746bf1b9921d65c513d16e299f11bae3bb4",
+  "bytes": 18129898,
+  "sha256": "2ed50062700c48fb0496fa0679922d4b3f47d474e5e3e4487b4199f5d8a43fcf",
   "files": 209,
   "initialSetup": "automatic-component-preparation",
   "requires": "Official Codex desktop browser tools and user-owned account sign-in"
