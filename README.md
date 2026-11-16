@@ -83,3 +83,5 @@ studio-contract.js 为独立版本合同。task.json 的 provider.mode 为 authe
 0.9.10：补齐调研的真实视觉读取通道。只读工具从公开原始说明页发现实际链接的使用图，返回图像像素及来源SHA256给调研和独立复核，不能把网页占位图或图片URL当成已看见画面。限制公开HTTPS、逐跳公共地址校验、8MB大小与12次读取上限，不接触账号或打开新标签页。保留全部原版规则、预算及单次生成限制；安装升级不启动或恢复视频任务。
 
 0.9.11：修正已排除的宣传备注也被当作致命用法冲突的问题。冲突逐条记录类型、原主张、来源、处置和理由；核心机制、明确要求的动作及未解决的冲突继续阻断，并显示具体原因。可省略的未证实卖点及来源页未采纳宣传不阻断，但必须进入独立复核，检查未删必需动作且未在脚本和实际提示词中重新引入。三版原插件和生成授权不变，不自动恢复或重生成历史任务。
+
+0.9.12: Full-workflow and latency optimization. Original three skill bundles remain unchanged. Compact typed examples, exact native enums, shared-field expansion, persistent draft repairs, source-image provenance and isolated local postproduction retain the full contracts. Natural English voice batches load once and reuse only identical verified files. Stage/model metrics target 15 minutes without guaranteeing platform queue time. See companion-v6/WORKFLOW-OPTIMIZATION.md for changes and verification limits. Live rehearsals stopped at the user request; no paid video was submitted.
