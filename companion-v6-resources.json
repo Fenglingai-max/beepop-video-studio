@@ -1,5 +1,5 @@
 {
-  "version": "0.9.3",
+  "version": "0.9.4",
   "parts": [
     "companion-v6-resource-01.bin",
     "companion-v6-resource-02.bin",
@@ -33,9 +33,9 @@
     "companion-v6-resource-30.bin",
     "companion-v6-resource-31.bin"
   ],
-  "bytes": 18163824,
-  "sha256": "0c08149622fbe820e7ffbfcc6ae136d9a39ffe25aa9352210a2cd9a6f676a61e",
-  "files": 221,
+  "bytes": 18168366,
+  "sha256": "23abff778f9ed1b8375e59c8d7a790413fe3522c6241f29f78d6adafcb545ce2",
+  "files": 223,
   "initialSetup": "automatic-component-preparation",
   "requires": "Official Codex desktop browser tools and user-owned account sign-in"
 }
