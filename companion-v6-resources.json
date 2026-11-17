@@ -33,8 +33,8 @@
     "companion-v6-resource-30.bin",
     "companion-v6-resource-31.bin"
   ],
-  "bytes": 18242232,
-  "sha256": "00a7780d65501fb6adf10ec88540602163dd366b51b1453c3684c961b9a6e3fc",
+  "bytes": 18245907,
+  "sha256": "780e1ccd5989bf1419b4985d0e87e90ea77cf49cda4c02fa4c2de18b58959952",
   "files": 244,
   "initialSetup": "automatic-component-preparation",
   "requires": "Official Codex desktop browser tools and user-owned account sign-in",
@@ -49,5 +49,7 @@
     "seedance-2.5-flash"
   ],
   "submissionTracking": "reserved-accepted-v1",
-  "automaticFirstGenerationCreditLimit": 500
+  "automaticFirstGenerationCreditLimit": 500,
+  "castingPolicyVersion": 1,
+  "targetMarket": "US/EU"
 }
