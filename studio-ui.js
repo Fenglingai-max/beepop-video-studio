@@ -10,7 +10,7 @@ function render(){
  q('.model-pill').textContent=remotion?'纯 Remotion · 无视频模型':C.models[s.model].label+' · LibTV';
  q('#selectionSummary').textContent=s.duration+' 秒 · '+s.ratio;
  q('#ratioIcon').classList.toggle('vertical',s.ratio==='9:16');
- q('#settingHelp').textContent=remotion?'本版用图片与场景素材编排纯 Remotion，不调用视频模型。声线为风格偏好，制作时匹配并试听。':'通过已登录 LibTV 页面使用所选模型；分辨率为请求值，制作前核对界面支持。声线为风格偏好。';
+ q('#settingHelp').textContent=s.model==='seedance-2.5-draft'&&!remotion?'Seedance 2.5 样片模式仅480p；高清升级需另行选择，不自动追加生成。':remotion?'本版用图片与场景素材编排纯 Remotion，不调用视频模型。声线为风格偏好，制作时匹配并试听。':'通过已登录 LibTV 页面使用所选模型；分辨率为请求值，制作前核对界面支持。声线为风格偏好。';
  q('.prototype-note').textContent='每项目仅提交生成 1 次、最多 500 积分。交付完整版与精剪版；补镜由你单独确认后生成并重新合成。';
  q('#generate').innerHTML='生成视频 <span>↗</span>';window.updateDirectMode?.();
 
