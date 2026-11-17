@@ -85,3 +85,7 @@ studio-contract.js 为独立版本合同。task.json 的 provider.mode 为 authe
 0.9.11：修正已排除的宣传备注也被当作致命用法冲突的问题。冲突逐条记录类型、原主张、来源、处置和理由；核心机制、明确要求的动作及未解决的冲突继续阻断，并显示具体原因。可省略的未证实卖点及来源页未采纳宣传不阻断，但必须进入独立复核，检查未删必需动作且未在脚本和实际提示词中重新引入。三版原插件和生成授权不变，不自动恢复或重生成历史任务。
 
 0.9.12: Full-workflow and latency optimization. Original three skill bundles remain unchanged. Compact typed examples, exact native enums, shared-field expansion, persistent draft repairs, source-image provenance and isolated local postproduction retain the full contracts. Natural English voice batches load once and reuse only identical verified files. Stage/model metrics target 15 minutes without guaranteeing platform queue time. See companion-v6/WORKFLOW-OPTIMIZATION.md for changes and verification limits. Live rehearsals stopped at the user request; no paid video was submitted.
+
+## 当前直出流程
+
+网页本机执行层采用组件内的 direct-direction.cjs，完整源码随网站既有助手组件保存。使用 plugin-direct-v1，撤掉独立用法研究、多轮前置批评与退回调研的串联。一次规划读取所选原版 SKILL 和全部引用，最多一次局部格式修正；真实审片在生成后执行，不冒充提前通过。保持原版商品一致性、动作、摄影、声音、一次预算授权和页面全文回读。未触发视频生成。
