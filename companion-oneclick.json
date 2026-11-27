@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "executionVersion": "0.9.12",
   "baseSha256": "67cd3859c40d2393ef7266a599dc0ed690c1b745e71bf98659d26a412b20c308",
   "platforms": {
@@ -45,8 +45,8 @@
     },
     "windows": {
       "filename": "BeePOP-Windows.zip",
-      "bytes": 18259217,
-      "sha256": "5d0fb81fe3e1321be2a4f9fd6cca0e079fce68c95768db219b77e8acbcbc1168",
+      "bytes": 18259976,
+      "sha256": "f09052a1467dc384b637ea3dfbe4bec572da9a886f3d6b0469beef4c7bfe0e9e",
       "parts": [
         "companion-oneclick-windows-01.bin",
         "companion-oneclick-windows-02.bin",
