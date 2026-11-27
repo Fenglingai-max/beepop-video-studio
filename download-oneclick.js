@@ -1,5 +1,5 @@
 (function(){'use strict';
-const q=s=>document.querySelector(s),buttons=[['#downloadCompanion','macos','下载 Mac 一键启动版'],['#downloadCompanionWindows','windows','下载 Windows 内置配音版']];
+const q=s=>document.querySelector(s),buttons=[['#downloadCompanion','macos','下载 Mac 运行助手'],['#downloadCompanionWindows','windows','下载 Windows 运行助手']];
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
 async function get(url){for(let attempt=0;attempt<3;attempt++){try{const r=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(60000)});if(!r.ok)throw Error('下载返回 HTTP '+r.status);return await r.arrayBuffer();}catch(e){if(attempt===2)throw e;}}}
 for(const [selector,platform,label] of buttons){const button=q(selector);if(!button)continue;
