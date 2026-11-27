@@ -11,11 +11,23 @@ function RunEntry([string]$directory,[string]$arguments,[int]$expected) {
     $inputFile = Join-Path $directory 'test-input.txt'; Set-Content -LiteralPath $inputFile -Value 'x' -Encoding ASCII
     $outFile = Join-Path $directory 'test-stdout.log'; $errFile = Join-Path $directory 'test-stderr.log'
     $entry = Join-Path $directory '启动BeePOP.cmd'
-    $p = Start-Process -FilePath $env:ComSpec -ArgumentList @('/d','/c',('call "' + $entry + '" ' + $arguments)) -PassThru -NoNewWindow -RedirectStandardInput $inputFile -RedirectStandardOutput $outFile -RedirectStandardError $errFile
-    if (-not $p.WaitForExit(600000)) { Stop-Process -Id $p.Id -Force; throw 'Entry self-test timed out' }
-    $p.Refresh(); $text = (Get-Content -LiteralPath $outFile -Raw) + (Get-Content -LiteralPath $errFile -Raw)
+    $info = New-Object System.Diagnostics.ProcessStartInfo
+    $info.FileName = $env:ComSpec
+    $info.Arguments = '/d /c call "' + $entry + '" ' + $arguments
+    $info.UseShellExecute = $false; $info.CreateNoWindow = $true
+    $info.RedirectStandardInput = $true; $info.RedirectStandardOutput = $true; $info.RedirectStandardError = $true
+    $p = New-Object System.Diagnostics.Process; $p.StartInfo = $info
+    [void]$p.Start()
+    $stdoutTask = $p.StandardOutput.ReadToEndAsync(); $stderrTask = $p.StandardError.ReadToEndAsync()
+    $p.StandardInput.WriteLine('x'); $p.StandardInput.Close()
+    if (-not $p.WaitForExit(600000)) { $p.Kill(); throw 'Entry self-test timed out' }
+    $exitCode = $p.ExitCode
+    $stdoutText = $stdoutTask.Result; $stderrText = $stderrTask.Result
+    Set-Content -LiteralPath $outFile -Value $stdoutText -Encoding UTF8
+    Set-Content -LiteralPath $errFile -Value $stderrText -Encoding UTF8
+    $text = $stdoutText + $stderrText
     Write-Host $text
-    if ($p.ExitCode -ne $expected) { throw ('Entry exit ' + $p.ExitCode + ', expected ' + $expected) }
+    if ($exitCode -ne $expected) { throw ('Entry exit ' + $exitCode + ', expected ' + $expected) }
     if ($text -notmatch 'Press any key to close') { throw 'Console error retention missing' }
     return $text
 }
