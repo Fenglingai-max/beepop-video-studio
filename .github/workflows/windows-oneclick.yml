@@ -5,7 +5,6 @@ on:
       - 'oneclick-source.zip'
       - 'oneclick-windows-smoke.ps1'
       - 'companion-oneclick.json'
-      - '.github/workflows/windows-oneclick.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -31,6 +30,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-oneclick-startup-logs
-          path: |
-            ${{ runner.temp }}/BeePOP*/**/*.log
-            ~/AppData/Local/BeePOP/logs/*.log
+          path: ${{ runner.temp }}/BeePOP*/**/*.log
